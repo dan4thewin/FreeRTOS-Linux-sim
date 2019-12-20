@@ -105,8 +105,8 @@
 
 /* Misc. */
 #define recmuSHORT_DELAY				( 20 / portTICK_RATE_MS )
-#define recmuNO_DELAY					( ( portTickType ) 0 )
-#define recmuTWO_TICK_DELAY				( ( portTickType ) 2 )
+#define recmuNO_DELAY					( ( TickType_t ) 0 )
+#define recmuTWO_TICK_DELAY				( ( TickType_t ) 2 )
 
 /* The three tasks as described at the top of this file. */
 static void prvRecursiveMutexControllingTask( void *pvParameters );
@@ -114,7 +114,7 @@ static void prvRecursiveMutexBlockingTask( void *pvParameters );
 static void prvRecursiveMutexPollingTask( void *pvParameters );
 
 /* The mutex used by the demo. */
-static xSemaphoreHandle xMutex;
+static SemaphoreHandle_t xMutex;
 
 /* Variables used to detect and latch errors. */
 static volatile portBASE_TYPE xErrorOccurred = pdFALSE, xControllingIsSuspended = pdFALSE, xBlockingIsSuspended = pdFALSE;
@@ -122,7 +122,7 @@ static volatile unsigned portBASE_TYPE uxControllingCycles = 0, uxBlockingCycles
 
 /* Handles of the two higher priority tasks, required so they can be resumed 
 (unsuspended). */
-static xTaskHandle xControllingTaskHandle, xBlockingTaskHandle;
+static TaskHandle_t xControllingTaskHandle, xBlockingTaskHandle;
 
 /*-----------------------------------------------------------*/
 
@@ -138,7 +138,7 @@ void vStartRecursiveMutexTasks( void )
 	is not being used.  The call to vQueueAddToRegistry() will be removed
 	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is 
 	defined to be less than 1. */
-	vQueueAddToRegistry( ( xQueueHandle ) xMutex, ( signed portCHAR * ) "Recursive_Mutex" );
+	vQueueAddToRegistry( ( QueueHandle_t ) xMutex, ( signed portCHAR * ) "Recursive_Mutex" );
 
 
 	if( xMutex != NULL )

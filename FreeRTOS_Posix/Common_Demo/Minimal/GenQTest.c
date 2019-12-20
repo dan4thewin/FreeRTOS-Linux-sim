@@ -125,14 +125,14 @@ static volatile unsigned portLONG ulGuardedVariable = 0;
 
 /* Handles used in the mutext test to suspend and resume the high and medium
 priority mutex test tasks. */
-static xTaskHandle xHighPriorityMutexTask, xMediumPriorityMutexTask;
+static TaskHandle_t xHighPriorityMutexTask, xMediumPriorityMutexTask;
 
 /*-----------------------------------------------------------*/
 
 void vStartGenericQueueTasks( unsigned portBASE_TYPE uxPriority )
 {
-xQueueHandle xQueue;
-xSemaphoreHandle xMutex;
+QueueHandle_t xQueue;
+SemaphoreHandle_t xMutex;
 
 	/* Create the queue that we are going to use for the
 	prvSendFrontAndBackTest demo. */
@@ -160,7 +160,7 @@ xSemaphoreHandle xMutex;
 	is not being used.  The call to vQueueAddToRegistry() will be removed
 	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is 
 	defined to be less than 1. */
-	vQueueAddToRegistry( ( xQueueHandle ) xMutex, ( signed portCHAR * ) "Gen_Queue_Mutex" );
+	vQueueAddToRegistry( ( QueueHandle_t ) xMutex, ( signed portCHAR * ) "Gen_Queue_Mutex" );
 
 	/* Create the mutex demo tasks and pass it the mutex just created.  We are
 	passing the mutex handle by value so it does not matter that it is declared
@@ -174,7 +174,7 @@ xSemaphoreHandle xMutex;
 static void prvSendFrontAndBackTest( void *pvParameters )
 {
 unsigned portLONG ulData, ulData2;
-xQueueHandle xQueue;
+QueueHandle_t xQueue;
 
 	#ifdef USE_STDIO
 	void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
@@ -185,7 +185,7 @@ xQueueHandle xQueue;
 		vPrintDisplayMessage( &pcTaskStartMsg );
 	#endif
 
-	xQueue = ( xQueueHandle ) pvParameters;
+	xQueue = ( QueueHandle_t ) pvParameters;
 
 	for( ;; )
 	{
@@ -401,7 +401,7 @@ xQueueHandle xQueue;
 
 static void prvLowPriorityMutexTask( void *pvParameters )
 {
-xSemaphoreHandle xMutex = ( xSemaphoreHandle ) pvParameters;
+SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 
 	#ifdef USE_STDIO
 	void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
@@ -517,7 +517,7 @@ static void prvMediumPriorityMutexTask( void *pvParameters )
 
 static void prvHighPriorityMutexTask( void *pvParameters )
 {
-xSemaphoreHandle xMutex = ( xSemaphoreHandle ) pvParameters;
+SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 
 	for( ;; )
 	{

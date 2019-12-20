@@ -101,12 +101,12 @@ detect a stalled task - a test that is no longer running. */
 static volatile unsigned portLONG ulLoopCounter = 0;
 
 /* Handles to the test tasks. */
-xTaskHandle xMediumPriorityTask, xHighPriorityTask, xHighestPriorityTask;
+TaskHandle_t xMediumPriorityTask, xHighPriorityTask, xHighestPriorityTask;
 /*-----------------------------------------------------------*/
 
 void vStartQueuePeekTasks( void )
 {
-xQueueHandle xQueue;
+QueueHandle_t xQueue;
 
 	/* Create the queue that we are going to use for the test/demo. */
 	xQueue = xQueueCreate( qpeekQUEUE_LENGTH, sizeof( unsigned portLONG ) );
@@ -131,7 +131,7 @@ xQueueHandle xQueue;
 
 static void prvHighestPriorityPeekTask( void *pvParameters )
 {
-xQueueHandle xQueue = ( xQueueHandle ) pvParameters;
+QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
 unsigned portLONG ulValue;
 
 	#ifdef USE_STDIO
@@ -240,7 +240,7 @@ unsigned portLONG ulValue;
 
 static void prvHighPriorityPeekTask( void *pvParameters )
 {
-xQueueHandle xQueue = ( xQueueHandle ) pvParameters;
+QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
 unsigned portLONG ulValue;
 
 	for( ;; )
@@ -295,7 +295,7 @@ unsigned portLONG ulValue;
 
 static void prvMediumPriorityPeekTask( void *pvParameters )
 {
-xQueueHandle xQueue = ( xQueueHandle ) pvParameters;
+QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
 unsigned portLONG ulValue;
 
 	for( ;; )
@@ -336,7 +336,7 @@ unsigned portLONG ulValue;
 
 static void prvLowPriorityPeekTask( void *pvParameters )
 {
-xQueueHandle xQueue = ( xQueueHandle ) pvParameters;
+QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
 unsigned portLONG ulValue;
 
 	for( ;; )

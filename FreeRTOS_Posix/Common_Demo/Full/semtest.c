@@ -89,7 +89,7 @@ Changes from V1.2.0:
 Changes from V2.0.0
 
 	+ Delay periods are now specified using variables and constants of
-	  portTickType rather than unsigned long.
+	  TickType_t rather than unsigned long.
 
 Changes from V2.1.1
 
@@ -116,7 +116,7 @@ Changes from V2.1.1
 
 #define semtstNUM_TASKS				( 4 )
 
-#define semtstDELAY_FACTOR			( ( portTickType ) 10 )
+#define semtstDELAY_FACTOR			( ( TickType_t ) 10 )
 
 /* The task function as described at the top of the file. */
 static void prvSemaphoreTest( void *pvParameters );
@@ -124,9 +124,9 @@ static void prvSemaphoreTest( void *pvParameters );
 /* Structure used to pass parameters to each task. */
 typedef struct SEMAPHORE_PARAMETERS
 {
-	xSemaphoreHandle xSemaphore;
+	SemaphoreHandle_t xSemaphore;
 	volatile unsigned long *pulSharedVariable;
-	portTickType xBlockTime;
+	TickType_t xBlockTime;
 } xSemaphoreParameters;
 
 /* Variables used to check that all the tasks are still running without errors. */
@@ -142,7 +142,7 @@ const char * const pcSemaphoreTaskStart = "Guarded shared variable task started.
 void vStartSemaphoreTasks( unsigned portBASE_TYPE uxPriority )
 {
 xSemaphoreParameters *pxFirstSemaphoreParameters, *pxSecondSemaphoreParameters;
-const portTickType xBlockTime = ( portTickType ) 100;
+const TickType_t xBlockTime = ( TickType_t ) 100;
 
 	/* Create the structure used to pass parameters to the first two tasks. */
 	pxFirstSemaphoreParameters = ( xSemaphoreParameters * ) pvPortMalloc( sizeof( xSemaphoreParameters ) );
@@ -161,11 +161,11 @@ const portTickType xBlockTime = ( portTickType ) 100;
 			*( pxFirstSemaphoreParameters->pulSharedVariable ) = semtstNON_BLOCKING_EXPECTED_VALUE;
 
 			/* The first two tasks do not block on semaphore calls. */
-			pxFirstSemaphoreParameters->xBlockTime = ( portTickType ) 0;
+			pxFirstSemaphoreParameters->xBlockTime = ( TickType_t ) 0;
 
 			/* Spawn the first two tasks.  As they poll they operate at the idle priority. */
-			xTaskCreate( prvSemaphoreTest, "PolSEM1", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL );
-			xTaskCreate( prvSemaphoreTest, "PolSEM2", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL );
+			xTaskCreate( prvSemaphoreTest, "PolSEM1", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL );
+			xTaskCreate( prvSemaphoreTest, "PolSEM2", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL );
 		}
 	}
 
@@ -182,8 +182,8 @@ const portTickType xBlockTime = ( portTickType ) 100;
 			*( pxSecondSemaphoreParameters->pulSharedVariable ) = semtstBLOCKING_EXPECTED_VALUE;
 			pxSecondSemaphoreParameters->xBlockTime = xBlockTime / portTICK_RATE_MS;
 
-			xTaskCreate( prvSemaphoreTest, "BlkSEM1", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( xTaskHandle * ) NULL );
-			xTaskCreate( prvSemaphoreTest, "BlkSEM2", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( xTaskHandle * ) NULL );
+			xTaskCreate( prvSemaphoreTest, "BlkSEM1", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL );
+			xTaskCreate( prvSemaphoreTest, "BlkSEM2", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL );
 		}
 	}
 }
@@ -213,7 +213,7 @@ short sError = pdFALSE, sCheckVariableToUse;
 
 	/* If we are blocking we use a much higher count to ensure loads of context
 	switches occur during the count. */
-	if( pxParameters->xBlockTime > ( portTickType ) 0 )
+	if( pxParameters->xBlockTime > ( TickType_t ) 0 )
 	{
 		ulExpectedValue = semtstBLOCKING_EXPECTED_VALUE;
 	}
@@ -277,7 +277,7 @@ short sError = pdFALSE, sCheckVariableToUse;
 		}
 		else
 		{
-			if( pxParameters->xBlockTime == ( portTickType ) 0 )
+			if( pxParameters->xBlockTime == ( TickType_t ) 0 )
 			{
 				/* We have not got the semaphore yet, so no point using the
 				processor.  We are not blocking when attempting to obtain the

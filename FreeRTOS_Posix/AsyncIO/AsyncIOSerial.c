@@ -61,7 +61,7 @@ unsigned char ucRx;
 		if ( NULL != pContext )
 		{
 			/* Send the received byte to the queue. */
-			if ( pdTRUE != xQueueSendFromISR( (xQueueHandle)pContext, &ucRx, &xHigherPriorityTaskWoken ) )
+			if ( pdTRUE != xQueueSendFromISR( (QueueHandle_t)pContext, &ucRx, &xHigherPriorityTaskWoken ) )
 			{
 				/* the queue is full. */
 			}

@@ -183,8 +183,8 @@ static int iSerialReceive = 0;
 
 int main( void )
 {
-xTaskHandle hUDPTask, hMQTask, hSerialTask;
-xQueueHandle xUDPReceiveQueue = NULL, xIPCQueue = NULL, xSerialRxQueue = NULL;
+TaskHandle_t hUDPTask, hMQTask, hSerialTask;
+QueueHandle_t xUDPReceiveQueue = NULL, xIPCQueue = NULL, xSerialRxQueue = NULL;
 int iSocketReceive = 0;
 struct sockaddr_in xReceiveAddress;
 
@@ -288,7 +288,7 @@ void prvUDPTask( void *pvParameters )
 static xUDPPacket xPacket;
 struct sockaddr_in xSendAddress;
 int iSocketSend, iReturn = 0, iSendTaskList = pdTRUE;
-xQueueHandle xUDPReceiveQueue = (xQueueHandle)pvParameters;
+QueueHandle_t xUDPReceiveQueue = (QueueHandle_t)pvParameters;
 
 	/* Open a socket for sending. */
 	iSocketSend = iSocketOpenUDP( NULL, NULL, NULL );
@@ -354,7 +354,7 @@ xMessageObject xTxMsg, xRxMsg = { { 0 } };
 	{
 		if ( pdTRUE == lPosixIPCSendMessage( xMessageQueuePipeHandle, xTxMsg ) )
 		{
-			if ( pdTRUE != xQueueReceive( (xQueueHandle)pvParameters, &xRxMsg, 5000 / portTICK_RATE_MS ) )
+			if ( pdTRUE != xQueueReceive( (QueueHandle_t)pvParameters, &xRxMsg, 5000 / portTICK_RATE_MS ) )
 			{
 				printf( "MQ Task: Queue Receive Failed.\n" );
 			}
@@ -371,7 +371,7 @@ xMessageObject xTxMsg, xRxMsg = { { 0 } };
 void vMessageQueueReceive( xMessageObject xMsg, void *pvContext )
 {
 portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
-	if ( pdTRUE != xQueueSendFromISR( (xQueueHandle)pvContext, &xMsg, &xHigherPriorityTaskWoken ) )
+	if ( pdTRUE != xQueueSendFromISR( (QueueHandle_t)pvContext, &xMsg, &xHigherPriorityTaskWoken ) )
 	{
 		printf( "MQ Rx failed.\n" );
 	}
@@ -381,10 +381,10 @@ portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
 static void vErrorChecks( void *pvParameters )
 {
-portTickType xExpectedWakeTime;
-const portTickType xPrintRate = ( portTickType ) 5000 / portTICK_RATE_MS;
+TickType_t xExpectedWakeTime;
+const TickType_t xPrintRate = ( TickType_t ) 5000 / portTICK_RATE_MS;
 const long lMaxAllowableTimeDifference = ( long ) 0;
-portTickType xWakeTime;
+TickType_t xWakeTime;
 long lTimeDifference;
 const char *pcReceivedMessage;
 const char * const pcTaskBlockedTooLongMsg = "Print task blocked too long!\r\n";
@@ -583,7 +583,7 @@ static unsigned long uxLastHookCallCount = 0, uxLastQueueSendCount = 0;
 
 void prvSerialConsoleEchoTask( void *pvParameters )
 {
-xQueueHandle hSerialRxQueue = ( xQueueHandle )pvParameters;
+QueueHandle_t hSerialRxQueue = ( QueueHandle_t )pvParameters;
 unsigned char ucRx;
 	if ( NULL != hSerialRxQueue )
 	{

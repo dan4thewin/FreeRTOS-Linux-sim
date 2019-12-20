@@ -116,7 +116,7 @@ struct sockaddr_in xReceiveAddress;
 
 	if ( sizeof( xUDPPacket ) == iSocketUDPReceiveISR( iSocket, &xPacket, &xReceiveAddress ) )
 	{
-		if ( pdPASS != xQueueSendFromISR( (xQueueHandle)pvContext, &xPacket, &xHigherTaskWoken ) )
+		if ( pdPASS != xQueueSendFromISR( (QueueHandle_t)pvContext, &xPacket, &xHigherTaskWoken ) )
 		{
 			printf( "UDP Rx failed\n" );
 		}

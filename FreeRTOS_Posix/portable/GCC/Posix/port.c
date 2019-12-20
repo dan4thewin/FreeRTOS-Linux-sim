@@ -77,7 +77,7 @@
 /* Parameters to pass to the newly created pthread. */
 typedef struct XPARAMS
 {
-	pdTASK_CODE pxCode;
+	TaskFunction_t pxCode;
 	void *pvParams;
 } xParams;
 
@@ -85,7 +85,7 @@ typedef struct XPARAMS
 typedef struct THREAD_SUSPENSIONS
 {
 	pthread_t hThread;
-	xTaskHandle hTask;
+	TaskHandle_t hTask;
 	unsigned portBASE_TYPE uxCriticalNesting;
 } xThreadState;
 /*-----------------------------------------------------------*/
@@ -117,7 +117,7 @@ static void prvResumeSignalHandler(int sig);
 static void prvSetupSignalsAndSchedulerPolicy( void );
 static void prvSuspendThread( pthread_t xThreadId );
 static void prvResumeThread( pthread_t xThreadId );
-static pthread_t prvGetThreadHandle( xTaskHandle hTask );
+static pthread_t prvGetThreadHandle( TaskHandle_t hTask );
 static portLONG prvGetFreeThreadState( void );
 static void prvSetTaskCriticalNesting( pthread_t xThreadId, unsigned portBASE_TYPE uxNesting );
 static unsigned portBASE_TYPE prvGetTaskCriticalNesting( pthread_t xThreadId );
@@ -139,7 +139,7 @@ void vPortStartFirstTask( void );
 /*
  * See header file for description.
  */
-portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters )
+portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
 {
 /* Should actually keep this struct on the stack. */
 xParams *pxThisThreadParams = pvPortMalloc( sizeof( xParams ) );
@@ -370,7 +370,7 @@ void vPortClearInterruptMask( portBASE_TYPE xMask )
 void prvSetupTimerInterrupt( void )
 {
 struct itimerval itimer, oitimer;
-portTickType xMicroSeconds = portTICK_RATE_MICROSECONDS;
+TickType_t xMicroSeconds = portTICK_RATE_MICROSECONDS;
 
 	/* Initialise the structure with the current timer information. */
 	if ( 0 == getitimer( TIMER_TYPE, &itimer ) )
@@ -449,7 +449,7 @@ pthread_t xTaskToResume;
 
 void vPortForciblyEndThread( void *pxTaskToDelete )
 {
-xTaskHandle hTaskToDelete = ( xTaskHandle )pxTaskToDelete;
+TaskHandle_t hTaskToDelete = ( TaskHandle_t )pxTaskToDelete;
 pthread_t xTaskToDelete;
 pthread_t xTaskToResume;
 portBASE_TYPE xResult;
@@ -497,7 +497,7 @@ portBASE_TYPE xResult;
 void *prvWaitForStart( void * pvParams )
 {
 xParams * pxParams = ( xParams * )pvParams;
-pdTASK_CODE pvCode = pxParams->pxCode;
+TaskFunction_t pvCode = pxParams->pxCode;
 void * pParams = pxParams->pvParams;
 	vPortFree( pvParams );
 
@@ -609,7 +609,7 @@ portLONG lIndex;
 	for ( lIndex = 0; lIndex < MAX_NUMBER_OF_TASKS; lIndex++ )
 	{
 		pxThreads[ lIndex ].hThread = ( pthread_t )NULL;
-		pxThreads[ lIndex ].hTask = ( xTaskHandle )NULL;
+		pxThreads[ lIndex ].hTask = ( TaskHandle_t )NULL;
 		pxThreads[ lIndex ].uxCriticalNesting = 0;
 	}
 
@@ -641,7 +641,7 @@ portLONG lIndex;
 }
 /*-----------------------------------------------------------*/
 
-pthread_t prvGetThreadHandle( xTaskHandle hTask )
+pthread_t prvGetThreadHandle( TaskHandle_t hTask )
 {
 pthread_t hThread = ( pthread_t )NULL;
 portLONG lIndex;
@@ -717,7 +717,7 @@ portLONG lIndex;
 		if ( pxThreads[ lIndex ].hThread == ( pthread_t )xThreadId )
 		{
 			pxThreads[ lIndex ].hThread = (pthread_t)NULL;
-			pxThreads[ lIndex ].hTask = (xTaskHandle)NULL;
+			pxThreads[ lIndex ].hTask = (TaskHandle_t)NULL;
 			if ( pxThreads[ lIndex ].uxCriticalNesting > 0 )
 			{
 				uxCriticalNesting = 0;
@@ -734,7 +734,7 @@ void vPortAddTaskHandle( void *pxTaskHandle )
 {
 portLONG lIndex;
 
-	pxThreads[ lIndexOfLastAddedTask ].hTask = ( xTaskHandle )pxTaskHandle;
+	pxThreads[ lIndexOfLastAddedTask ].hTask = ( TaskHandle_t )pxTaskHandle;
 	for ( lIndex = 0; lIndex < MAX_NUMBER_OF_TASKS; lIndex++ )
 	{
 		if ( pxThreads[ lIndex ].hThread == pxThreads[ lIndexOfLastAddedTask ].hThread )
