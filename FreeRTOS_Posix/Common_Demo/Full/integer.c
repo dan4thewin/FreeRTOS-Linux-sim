@@ -106,7 +106,7 @@ task gets a calculation wrong it will stop incrementing its check variable. */
 static volatile unsigned short usTaskCheck[ intgNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
 /*-----------------------------------------------------------*/
 
-void vStartIntegerMathTasks( unsigned portBASE_TYPE uxPriority )
+void vStartIntegerMathTasks( UBaseType_t uxPriority )
 {
 	xTaskCreate( vCompeteingIntMathTask1, "IntMath1", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 0 ] ), uxPriority, NULL );
 	xTaskCreate( vCompeteingIntMathTask2, "IntMath2", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 1 ] ), uxPriority, NULL );
@@ -329,12 +329,12 @@ const char * const pcTaskFailMsg = "Integer math task 4 failed.\r\n";
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running. */
-portBASE_TYPE xAreIntegerMathsTaskStillRunning( void )
+BaseType_t xAreIntegerMathsTaskStillRunning( void )
 {
 /* Keep a history of the check variables so we know if they have been incremented 
 since the last call. */
 static unsigned short usLastTaskCheck[ intgNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
-portBASE_TYPE xReturn = pdTRUE, xTask;
+BaseType_t xReturn = pdTRUE, xTask;
 
 	/* Check the maths tasks are still running by ensuring their check variables 
 	are still incrementing. */

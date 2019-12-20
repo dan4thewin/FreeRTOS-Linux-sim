@@ -139,7 +139,7 @@ const char * const pcSemaphoreTaskStart = "Guarded shared variable task started.
 
 /*-----------------------------------------------------------*/
 
-void vStartSemaphoreTasks( unsigned portBASE_TYPE uxPriority )
+void vStartSemaphoreTasks( UBaseType_t uxPriority )
 {
 xSemaphoreParameters *pxFirstSemaphoreParameters, *pxSecondSemaphoreParameters;
 const TickType_t xBlockTime = ( TickType_t ) 100;
@@ -290,10 +290,10 @@ short sError = pdFALSE, sCheckVariableToUse;
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running. */
-portBASE_TYPE xAreSemaphoreTasksStillRunning( void )
+BaseType_t xAreSemaphoreTasksStillRunning( void )
 {
 static short sLastCheckVariables[ semtstNUM_TASKS ] = { 0 };
-portBASE_TYPE xTask, xReturn = pdTRUE;
+BaseType_t xTask, xReturn = pdTRUE;
 
 	for( xTask = 0; xTask < semtstNUM_TASKS; xTask++ )
 	{

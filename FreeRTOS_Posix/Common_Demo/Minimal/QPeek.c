@@ -94,7 +94,7 @@ static void prvHighestPriorityPeekTask( void *pvParameters );
 
 /* Flag that will be latched to pdTRUE should any unexpected behaviour be
 detected in any of the tasks. */
-static volatile portBASE_TYPE xErrorDetected = pdFALSE;
+static volatile BaseType_t xErrorDetected = pdFALSE;
 
 /* Counter that is incremented on each cycle of a test.  This is used to
 detect a stalled task - a test that is no longer running. */
@@ -425,7 +425,7 @@ unsigned portLONG ulValue;
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running. */
-portBASE_TYPE xAreQueuePeekTasksStillRunning( void )
+BaseType_t xAreQueuePeekTasksStillRunning( void )
 {
 static unsigned portLONG ulLastLoopCounter = 0;
 

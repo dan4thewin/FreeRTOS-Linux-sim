@@ -113,7 +113,7 @@ static void prvHighPriorityMutexTask( void *pvParameters );
 
 /* Flag that will be latched to pdTRUE should any unexpected behaviour be
 detected in any of the tasks. */
-static portBASE_TYPE xErrorDetected = pdFALSE;
+static BaseType_t xErrorDetected = pdFALSE;
 
 /* Counters that are incremented on each cycle of a test.  This is used to
 detect a stalled task - a test that is no longer running. */
@@ -129,7 +129,7 @@ static TaskHandle_t xHighPriorityMutexTask, xMediumPriorityMutexTask;
 
 /*-----------------------------------------------------------*/
 
-void vStartGenericQueueTasks( unsigned portBASE_TYPE uxPriority )
+void vStartGenericQueueTasks( UBaseType_t uxPriority )
 {
 QueueHandle_t xQueue;
 SemaphoreHandle_t xMutex;
@@ -544,7 +544,7 @@ SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running. */
-portBASE_TYPE xAreGenericQueueTasksStillRunning( void )
+BaseType_t xAreGenericQueueTasksStillRunning( void )
 {
 static unsigned portLONG ulLastLoopCounter = 0, ulLastLoopCounter2 = 0;
 

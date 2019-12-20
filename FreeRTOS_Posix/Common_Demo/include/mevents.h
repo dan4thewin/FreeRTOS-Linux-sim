@@ -55,7 +55,7 @@
 #define EVENTS_TEST_H
 
 void vStartMultiEventTasks( void );
-portBASE_TYPE xAreMultiEventTasksStillRunning( void );
+BaseType_t xAreMultiEventTasksStillRunning( void );
 
 #endif
 

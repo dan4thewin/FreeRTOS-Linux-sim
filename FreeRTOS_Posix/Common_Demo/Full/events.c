@@ -86,9 +86,9 @@
 #include "print.h"
 
 /* Demo specific constants. */
-#define evtSTACK_SIZE		( ( unsigned portBASE_TYPE ) configMINIMAL_STACK_SIZE )
+#define evtSTACK_SIZE		( ( UBaseType_t ) configMINIMAL_STACK_SIZE )
 #define evtNUM_TASKS		( 4 )
-#define evtQUEUE_LENGTH		( ( unsigned portBASE_TYPE ) 3 )
+#define evtQUEUE_LENGTH		( ( UBaseType_t ) 3 )
 #define evtNO_DELAY						0
 
 /* Just indexes used to uniquely identify the tasks.  Note that two tasks are
@@ -100,7 +100,7 @@
 
 /* Each event task increments one of these counters each time it reads data
 from the queue. */
-static volatile portBASE_TYPE xTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
+static volatile BaseType_t xTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
 
 /* Each time the controlling task posts onto the queue it increments the 
 expected count of the task that it expected to read the data from the queue 
@@ -110,7 +110,7 @@ xExpectedTaskCounters are incremented from the controlling task, and
 xTaskCounters are incremented from the individual event tasks - therefore
 comparing xTaskCounters to xExpectedTaskCounters shows whether or not the 
 correct task was unblocked by the post. */
-static portBASE_TYPE xExpectedTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
+static BaseType_t xExpectedTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
 
 /* Handles to the four event tasks.  These are required to suspend and resume
 the tasks. */
@@ -123,7 +123,7 @@ static QueueHandle_t xQueue;
 /* Flag used to indicate whether or not an error has occurred at any time.
 An error is either the queue being full when not expected, or an unexpected
 task reading data from the queue. */
-static portBASE_TYPE xHealthStatus = pdPASS;
+static BaseType_t xHealthStatus = pdPASS;
 
 /*-----------------------------------------------------------*/
 
@@ -147,18 +147,18 @@ and checking the task counters.
 					  
 @param	xIncrement    The number of items that should be written to the queue.
 */
-static void prvCheckTaskCounters( portBASE_TYPE xExpectedTask, portBASE_TYPE xIncrement );
+static void prvCheckTaskCounters( BaseType_t xExpectedTask, BaseType_t xIncrement );
 
 /* This is just incremented each cycle of the controlling tasks function so
 the main application can ensure the test is still running. */
-static portBASE_TYPE xCheckVariable = 0;
+static BaseType_t xCheckVariable = 0;
 
 /*-----------------------------------------------------------*/
 
 void vStartMultiEventTasks( void )
 {
 	/* Create the queue to be used for all the communications. */
-	xQueue = xQueueCreate( evtQUEUE_LENGTH, ( unsigned portBASE_TYPE ) sizeof( unsigned portBASE_TYPE ) );
+	xQueue = xQueueCreate( evtQUEUE_LENGTH, ( UBaseType_t ) sizeof( UBaseType_t ) );
 
 	/* Start the controlling task.  This has the idle priority to ensure it is
 	always preempted by the event tasks. */
@@ -175,12 +175,12 @@ void vStartMultiEventTasks( void )
 
 static void prvMultiEventTask( void *pvParameters )
 {
-portBASE_TYPE *pxCounter;
-unsigned portBASE_TYPE uxDummy;
+BaseType_t *pxCounter;
+UBaseType_t uxDummy;
 const char * const pcTaskStartMsg = "Multi event task started.\r\n";
 
 	/* The variable this task will increment is passed in as a parameter. */
-	pxCounter = ( portBASE_TYPE * ) pvParameters;
+	pxCounter = ( BaseType_t * ) pvParameters;
 
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
@@ -204,7 +204,7 @@ const char * const pcTaskStartMsg = "Multi event task started.\r\n";
 static void prvEventControllerTask( void *pvParameters )
 {
 const char * const pcTaskStartMsg = "Multi event controller task started.\r\n";
-portBASE_TYPE xDummy = 0;
+BaseType_t xDummy = 0;
 
 	/* Just to stop warnings. */
 	( void ) pvParameters;
@@ -342,9 +342,9 @@ portBASE_TYPE xDummy = 0;
 }
 /*-----------------------------------------------------------*/
 
-static void prvCheckTaskCounters( portBASE_TYPE xExpectedTask, portBASE_TYPE xIncrement )
+static void prvCheckTaskCounters( BaseType_t xExpectedTask, BaseType_t xIncrement )
 {
-portBASE_TYPE xDummy = 0;
+BaseType_t xDummy = 0;
 
 	/* Write to the queue the requested number of times.  The data written is
 	not important. */
@@ -374,9 +374,9 @@ portBASE_TYPE xDummy = 0;
 }
 /*-----------------------------------------------------------*/
 
-portBASE_TYPE xAreMultiEventTasksStillRunning( void )
+BaseType_t xAreMultiEventTasksStillRunning( void )
 {
-static portBASE_TYPE xPreviousCheckVariable = 0;
+static BaseType_t xPreviousCheckVariable = 0;
 
 	/* Called externally to periodically check that this test is still
 	operational. */

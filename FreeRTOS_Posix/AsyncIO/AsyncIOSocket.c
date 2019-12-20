@@ -110,7 +110,7 @@ socklen_t xSocketLength = sizeof( struct sockaddr_in );
 
 void vUDPReceiveAndDeliverCallback( int iSocket, void *pvContext )
 {
-portBASE_TYPE xHigherTaskWoken = pdFALSE;
+BaseType_t xHigherTaskWoken = pdFALSE;
 static xUDPPacket xPacket;
 struct sockaddr_in xReceiveAddress;
 

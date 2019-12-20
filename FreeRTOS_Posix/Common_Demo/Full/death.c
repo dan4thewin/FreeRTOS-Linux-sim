@@ -102,8 +102,8 @@ static volatile short sCreationCount = 0;
 
 /* Used to store the number of tasks that were originally running so the creator 
 task can tell if any of the suicidal tasks have failed to die. */
-static volatile unsigned portBASE_TYPE uxTasksRunningAtStart = 0;
-static const unsigned portBASE_TYPE uxMaxNumberOfExtraTasksRunning = 5;
+static volatile UBaseType_t uxTasksRunningAtStart = 0;
+static const UBaseType_t uxMaxNumberOfExtraTasksRunning = 5;
 
 /* Used to store a handle to the tasks that should be killed by a suicidal task, 
 before it kills itself. */
@@ -111,13 +111,13 @@ TaskHandle_t xCreatedTask1, xCreatedTask2;
 
 /*-----------------------------------------------------------*/
 
-void vCreateSuicidalTasks( unsigned portBASE_TYPE uxPriority )
+void vCreateSuicidalTasks( UBaseType_t uxPriority )
 {
-unsigned portBASE_TYPE *puxPriority;
+UBaseType_t *puxPriority;
 
 	/* Create the Creator tasks - passing in as a parameter the priority at which 
 	the suicidal tasks should be created. */
-	puxPriority = ( unsigned portBASE_TYPE * ) pvPortMalloc( sizeof( unsigned portBASE_TYPE ) );
+	puxPriority = ( UBaseType_t * ) pvPortMalloc( sizeof( UBaseType_t ) );
 	*puxPriority = uxPriority;
 
 	xTaskCreate( vCreateTasks, "CREATOR", deathSTACK_SIZE, ( void * ) puxPriority, uxPriority, NULL );
@@ -170,13 +170,13 @@ const TickType_t xDelay = ( TickType_t ) 500 / portTICK_RATE_MS;
 static void vCreateTasks( void *pvParameters )
 {
 const TickType_t xDelay = ( TickType_t ) 1000 / portTICK_RATE_MS;
-unsigned portBASE_TYPE uxPriority;
+UBaseType_t uxPriority;
 const char * const pcTaskStartMsg = "Create task started.\r\n";
 
 	/* Queue a message for printing to say the task has started. */
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
-	uxPriority = *( unsigned portBASE_TYPE * ) pvParameters;
+	uxPriority = *( UBaseType_t * ) pvParameters;
 	vPortFree( pvParameters );
 
 	for( ;; )
@@ -197,11 +197,11 @@ const char * const pcTaskStartMsg = "Create task started.\r\n";
 
 /* This is called to check that the creator task is still running and that there 
 are not any more than four extra tasks. */
-portBASE_TYPE xIsCreateTaskStillRunning( void )
+BaseType_t xIsCreateTaskStillRunning( void )
 {
 static short sLastCreationCount = 0;
 short sReturn = pdTRUE;
-unsigned portBASE_TYPE uxTasksRunningNow;
+UBaseType_t uxTasksRunningNow;
 
 	if( sLastCreationCount == sCreationCount )
 	{

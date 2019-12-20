@@ -95,7 +95,7 @@ Changes from V2.1.1
 /* Structure used to pass parameters to the LED tasks. */
 typedef struct LED_PARAMETERS
 {
-	unsigned portBASE_TYPE uxLED;		/*< The output the task should use. */
+	UBaseType_t uxLED;		/*< The output the task should use. */
 	TickType_t xFlashRate;	/*< The rate at which the LED should flash. */
 } xLEDParameters;
 
@@ -108,11 +108,11 @@ const char * const pcTaskStartMsg = "LED flash task started.\r\n";
 
 /*-----------------------------------------------------------*/
 
-void vStartLEDFlashTasks( unsigned portBASE_TYPE uxPriority )
+void vStartLEDFlashTasks( UBaseType_t uxPriority )
 {
-unsigned portBASE_TYPE uxLEDTask;
+UBaseType_t uxLEDTask;
 xLEDParameters *pxLEDParameters;
-const unsigned portBASE_TYPE uxNumOfLEDs = 8;
+const UBaseType_t uxNumOfLEDs = 8;
 const TickType_t xFlashRate = 125;
 
 	/* Create the eight tasks. */

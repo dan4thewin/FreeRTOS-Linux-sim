@@ -103,7 +103,7 @@ static volatile unsigned short usTaskCheck[ mathNUMBER_OF_TASKS ] = { ( unsigned
 
 /*-----------------------------------------------------------*/
 
-void vStartMathTasks( unsigned portBASE_TYPE uxPriority )
+void vStartMathTasks( UBaseType_t uxPriority )
 {
 	xTaskCreate( vCompetingMathTask1, "Math1", mathSTACK_SIZE, ( void * ) &( usTaskCheck[ 0 ] ), uxPriority, NULL );
 	xTaskCreate( vCompetingMathTask2, "Math2", mathSTACK_SIZE, ( void * ) &( usTaskCheck[ 1 ] ), uxPriority, NULL );
@@ -330,12 +330,12 @@ short sError = pdFALSE;
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running. */
-portBASE_TYPE xAreMathsTaskStillRunning( void )
+BaseType_t xAreMathsTaskStillRunning( void )
 {
 /* Keep a history of the check variables so we know if they have been incremented 
 since the last call. */
 static unsigned short usLastTaskCheck[ mathNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
-portBASE_TYPE xReturn = pdTRUE, xTask;
+BaseType_t xReturn = pdTRUE, xTask;
 
 	/* Check the maths tasks are still running by ensuring their check variables 
 	are still incrementing. */

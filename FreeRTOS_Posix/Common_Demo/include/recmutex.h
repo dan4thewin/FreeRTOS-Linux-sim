@@ -55,7 +55,7 @@
 #define RECURSIVE_MUTEX_TEST_H
 
 void vStartRecursiveMutexTasks( void );
-portBASE_TYPE xAreRecursiveMutexTasksStillRunning( void );
+BaseType_t xAreRecursiveMutexTasksStillRunning( void );
 
 #endif
 

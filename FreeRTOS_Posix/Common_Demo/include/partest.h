@@ -57,8 +57,8 @@
 #define partstDEFAULT_PORT_ADDRESS		( ( unsigned short ) 0x378 )
 
 void vParTestInitialise( void );
-void vParTestSetLED( unsigned portBASE_TYPE uxLED, signed portBASE_TYPE xValue );
-void vParTestToggleLED( unsigned portBASE_TYPE uxLED );
+void vParTestSetLED( UBaseType_t uxLED, BaseType_t xValue );
+void vParTestToggleLED( UBaseType_t uxLED );
 
 #endif
 

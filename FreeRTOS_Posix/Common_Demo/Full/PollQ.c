@@ -108,13 +108,13 @@ static void vPolledQueueConsumer( void *pvParameters );
 static volatile short sPollingConsumerCount = 0, sPollingProducerCount = 0;
 /*-----------------------------------------------------------*/
 
-void vStartPolledQueueTasks( unsigned portBASE_TYPE uxPriority )
+void vStartPolledQueueTasks( UBaseType_t uxPriority )
 {
 static QueueHandle_t xPolledQueue;
-const unsigned portBASE_TYPE uxQueueSize = 10;
+const UBaseType_t uxQueueSize = 10;
 
 	/* Create the queue used by the producer and consumer. */
-	xPolledQueue = xQueueCreate( uxQueueSize, ( unsigned portBASE_TYPE ) sizeof( unsigned short ) );
+	xPolledQueue = xQueueCreate( uxQueueSize, ( UBaseType_t ) sizeof( unsigned short ) );
 
 	/* Spawn the producer and consumer. */
 	xTaskCreate( vPolledQueueConsumer, "QConsNB", pollqSTACK_SIZE, ( void * ) &xPolledQueue, uxPriority, NULL );
@@ -223,10 +223,10 @@ short sError = pdFALSE;
 /*-----------------------------------------------------------*/
 
 /* This is called to check that all the created tasks are still running with no errors. */
-portBASE_TYPE xArePollingQueuesStillRunning( void )
+BaseType_t xArePollingQueuesStillRunning( void )
 {
 static short sLastPollingConsumerCount = 0, sLastPollingProducerCount = 0;
-portBASE_TYPE xReturn;
+BaseType_t xReturn;
 
 	if( ( sLastPollingConsumerCount == sPollingConsumerCount ) ||
 		( sLastPollingProducerCount == sPollingProducerCount ) 

@@ -190,9 +190,9 @@ Each complete iteration of the controller task increments this variable
 provided no errors have been found.  The variable maintaining the same value
 is therefore indication of an error. */
 static unsigned short usCheckVariable = ( unsigned short ) 0;
-static portBASE_TYPE xSuspendedQueueSendError = pdFALSE;
-static portBASE_TYPE xSuspendedQueueReceiveError = pdFALSE;
-static portBASE_TYPE xPriorityRaiseWhenSuspendedError = pdFALSE;
+static BaseType_t xSuspendedQueueSendError = pdFALSE;
+static BaseType_t xSuspendedQueueReceiveError = pdFALSE;
+static BaseType_t xPriorityRaiseWhenSuspendedError = pdFALSE;
 
 /* Queue used by the second test. */
 QueueHandle_t xSuspendedTestQueue;
@@ -251,7 +251,7 @@ unsigned long *pulCounter;
 static void vContinuousIncrementTask( void * pvParameters )
 {
 unsigned long *pulCounter;
-unsigned portBASE_TYPE uxOurPriority;
+UBaseType_t uxOurPriority;
 
 	/* Take a pointer to the shared variable from the parameters passed into
 	the task. */
@@ -416,7 +416,7 @@ static void vQueueReceiveWhenSuspendedTask( void *pvParameters )
 static unsigned long ulExpectedValue = ( unsigned long ) 0, ulReceivedValue;
 const char * const pcTaskStartMsg = "Queue receive while suspended task started.\r\n";
 const char * const pcTaskFailMsg = "Queue receive while suspended failed.\r\n";
-portBASE_TYPE xGotValue;
+BaseType_t xGotValue;
 
 	/* Just to stop warning messages. */
 	( void ) pvParameters;
@@ -564,12 +564,12 @@ static void prvChangePriorityHelperTask( void *pvParameters )
 /*-----------------------------------------------------------*/
 
 /* Called to check that all the created tasks are still running without error. */
-portBASE_TYPE xAreDynamicPriorityTasksStillRunning( void )
+BaseType_t xAreDynamicPriorityTasksStillRunning( void )
 {
 /* Keep a history of the check variables so we know if it has been incremented 
 since the last call. */
 static unsigned short usLastTaskCheck = ( unsigned short ) 0;
-portBASE_TYPE xReturn = pdTRUE;
+BaseType_t xReturn = pdTRUE;
 
 	/* Check the tasks are still running by ensuring the check variable
 	is still incrementing. */

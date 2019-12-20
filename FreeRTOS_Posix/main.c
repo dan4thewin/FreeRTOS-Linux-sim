@@ -161,7 +161,7 @@ static void prvCheckOtherTasksAreStillRunning( void );
 static const short sUsingPreemption = configUSE_PREEMPTION;
 
 /* Used to demonstrate the "task switched in" callback function. */
-static portBASE_TYPE prvExampleTaskHook( void * pvParameter );
+static BaseType_t prvExampleTaskHook( void * pvParameter );
 
 /* Send/Receive UDP packets. */
 static void prvUDPTask( void *pvParameters );
@@ -258,7 +258,7 @@ struct sockaddr_in xReceiveAddress;
 }
 /*-----------------------------------------------------------*/
 
-static portBASE_TYPE prvExampleTaskHook( void * pvParameter )
+static BaseType_t prvExampleTaskHook( void * pvParameter )
 {
 	if( pvParameter != ( void * ) 0xabcd )
 	{
@@ -370,7 +370,7 @@ xMessageObject xTxMsg, xRxMsg = { { 0 } };
 
 void vMessageQueueReceive( xMessageObject xMsg, void *pvContext )
 {
-portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	if ( pdTRUE != xQueueSendFromISR( (QueueHandle_t)pvContext, &xMsg, &xHigherPriorityTaskWoken ) )
 	{
 		printf( "MQ Rx failed.\n" );

@@ -54,7 +54,7 @@
 #ifndef FLASH_LED_H
 #define FLASH_LED_H
 
-void vStartLEDFlashTasks( unsigned portBASE_TYPE uxPriority );
+void vStartLEDFlashTasks( UBaseType_t uxPriority );
 
 #endif
 
