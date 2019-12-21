@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -102,13 +102,13 @@
 from the queue. */
 static volatile BaseType_t xTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
 
-/* Each time the controlling task posts onto the queue it increments the 
-expected count of the task that it expected to read the data from the queue 
-(i.e. the task with the highest priority that should be blocked on the queue).  
+/* Each time the controlling task posts onto the queue it increments the
+expected count of the task that it expected to read the data from the queue
+(i.e. the task with the highest priority that should be blocked on the queue).
 
-xExpectedTaskCounters are incremented from the controlling task, and 
+xExpectedTaskCounters are incremented from the controlling task, and
 xTaskCounters are incremented from the individual event tasks - therefore
-comparing xTaskCounters to xExpectedTaskCounters shows whether or not the 
+comparing xTaskCounters to xExpectedTaskCounters shows whether or not the
 correct task was unblocked by the post. */
 static BaseType_t xExpectedTaskCounters[ evtNUM_TASKS ] = { 0, 0, 0, 0 };
 
@@ -133,18 +133,18 @@ static void prvMultiEventTask( void *pvParameters );
 /* Function that implements the controlling task. */
 static void prvEventControllerTask( void *pvParameters );
 
-/* This is a utility function that posts data to the queue, then compares 
-xExpectedTaskCounters with xTaskCounters to ensure everything worked as 
+/* This is a utility function that posts data to the queue, then compares
+xExpectedTaskCounters with xTaskCounters to ensure everything worked as
 expected.
 
 The event tasks all have higher priorities the controlling task.  Therefore
 the controlling task will always get preempted between writhing to the queue
-and checking the task counters. 
+and checking the task counters.
 
 @param xExpectedTask  The index to the task that the controlling task thinks
                       should be the highest priority task waiting for data, and
 					  therefore the task that will unblock.
-					  
+
 @param	xIncrement    The number of items that should be written to the queue.
 */
 static void prvCheckTaskCounters( BaseType_t xExpectedTask, BaseType_t xIncrement );
@@ -164,7 +164,7 @@ void vStartMultiEventTasks( void )
 	always preempted by the event tasks. */
 	xTaskCreate( prvEventControllerTask, "EvntCTRL", evtSTACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 
-	/* Start the four event tasks.  Note that two have priority 3, one 
+	/* Start the four event tasks.  Note that two have priority 3, one
 	priority 2 and the other priority 1. */
 	xTaskCreate( prvMultiEventTask, "Event0", evtSTACK_SIZE, ( void * ) &( xTaskCounters[ 0 ] ), 1, &( xCreatedTasks[ evtLOWEST_PRIORITY_INDEX ] ) );
 	xTaskCreate( prvMultiEventTask, "Event1", evtSTACK_SIZE, ( void * ) &( xTaskCounters[ 1 ] ), 2, &( xCreatedTasks[ evtMEDIUM_PRIORITY_INDEX ] ) );
@@ -216,7 +216,7 @@ BaseType_t xDummy = 0;
 		/* All tasks are blocked on the queue.  When a message is posted one of
 		the two tasks that share the highest priority should unblock to read
 		the queue.  The next message written should unblock the other task with
-		the same high priority, and so on in order.   No other task should 
+		the same high priority, and so on in order.   No other task should
 		unblock to read data as they have lower priorities. */
 
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_1, 1 );
@@ -225,17 +225,17 @@ BaseType_t xDummy = 0;
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_2, 1 );
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_1, 1 );
 
-		/* For the rest of these tests we don't need the second 'highest' 
+		/* For the rest of these tests we don't need the second 'highest'
 		priority task - so it is suspended. */
 		vTaskSuspend( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_2 ] );
 
 
 
-		/* Now suspend the other highest priority task.  The medium priority 
-		task will then be the task with the highest priority that remains 
+		/* Now suspend the other highest priority task.  The medium priority
+		task will then be the task with the highest priority that remains
 		blocked on the queue. */
 		vTaskSuspend( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
-		
+
 		/* This time, when we post onto the queue we will expect the medium
 		priority task to unblock and preempt us. */
 		prvCheckTaskCounters( evtMEDIUM_PRIORITY_INDEX, 1 );
@@ -248,24 +248,24 @@ BaseType_t xDummy = 0;
 			vTaskResume( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
 		xTaskResumeAll();
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_1, 1 );
-		
+
 		/* Now we are going to suspend the high and medium priority tasks.  The
-		low priority task should then preempt us.  Again the task suspension is 
+		low priority task should then preempt us.  Again the task suspension is
 		done with the whole scheduler suspended just for test purposes. */
 		vTaskSuspendAll();
 			vTaskSuspend( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
 			vTaskSuspend( xCreatedTasks[ evtMEDIUM_PRIORITY_INDEX ] );
 		xTaskResumeAll();
 		prvCheckTaskCounters( evtLOWEST_PRIORITY_INDEX, 1 );
-		
+
 		/* Do the same basic test another few times - selectively suspending
 		and resuming tasks and each time calling prvCheckTaskCounters() passing
-		to the function the number of the task we expected to be unblocked by 
+		to the function the number of the task we expected to be unblocked by
 		the	post. */
 
 		vTaskResume( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_1, 1 );
-		
+
 		vTaskSuspendAll(); /* Just for test. */
 			vTaskSuspendAll(); /* Just for test. */
 				vTaskSuspendAll(); /* Just for even more test. */
@@ -274,10 +274,10 @@ BaseType_t xDummy = 0;
 			xTaskResumeAll();
 		xTaskResumeAll();
 		prvCheckTaskCounters( evtLOWEST_PRIORITY_INDEX, 1 );
-		
+
 		vTaskResume( xCreatedTasks[ evtMEDIUM_PRIORITY_INDEX ] );
 		prvCheckTaskCounters( evtMEDIUM_PRIORITY_INDEX, 1 );
-		
+
 		vTaskResume( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
 		prvCheckTaskCounters( evtHIGHEST_PRIORITY_INDEX_1, 1 );
 
@@ -285,17 +285,17 @@ BaseType_t xDummy = 0;
 		vTaskSuspend( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
 		vTaskSuspend( xCreatedTasks[ evtMEDIUM_PRIORITY_INDEX ] );
 		vTaskSuspend( xCreatedTasks[ evtLOWEST_PRIORITY_INDEX ] );
-		
-		/* Now when we resume the low priority task and write to the queue 3 
+
+		/* Now when we resume the low priority task and write to the queue 3
 		times.  We expect the low priority task to service the queue three
 		times. */
 		vTaskResume( xCreatedTasks[ evtLOWEST_PRIORITY_INDEX ] );
 		prvCheckTaskCounters( evtLOWEST_PRIORITY_INDEX, evtQUEUE_LENGTH );
-		
+
 		/* Again suspend all tasks (only the low priority task is not suspended
 		already). */
 		vTaskSuspend( xCreatedTasks[ evtLOWEST_PRIORITY_INDEX ] );
-		
+
 		/* This time we are going to suspend the scheduler, resume the low
 		priority task, then resume the high priority task.  In this state we
 		will write to the queue three times.  When the scheduler is resumed
@@ -304,15 +304,15 @@ BaseType_t xDummy = 0;
 		{
 			vTaskResume( xCreatedTasks[ evtLOWEST_PRIORITY_INDEX ] );
 			vTaskResume( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_1 ] );
-			
+
 			for( xDummy = 0; xDummy < evtQUEUE_LENGTH; xDummy++ )
 			{
 				if( xQueueSend( xQueue, &xDummy, evtNO_DELAY ) != pdTRUE )
 				{
 					xHealthStatus = pdFAIL;
 				}
-			}			
-			
+			}
+
 			/* The queue should not have been serviced yet!.  The scheduler
 			is still suspended. */
 			if( memcmp( ( void * ) xExpectedTaskCounters, ( void * ) xTaskCounters, sizeof( xExpectedTaskCounters ) ) )
@@ -323,15 +323,15 @@ BaseType_t xDummy = 0;
 		xTaskResumeAll();
 
 		/* We should have been preempted by resuming the scheduler - so by the
-		time we are running again we expect the high priority task to have 
+		time we are running again we expect the high priority task to have
 		removed three items from the queue. */
 		xExpectedTaskCounters[ evtHIGHEST_PRIORITY_INDEX_1 ] += evtQUEUE_LENGTH;
 		if( memcmp( ( void * ) xExpectedTaskCounters, ( void * ) xTaskCounters, sizeof( xExpectedTaskCounters ) ) )
 		{
 			xHealthStatus = pdFAIL;
 		}
-		
-		/* The medium priority and second high priority tasks are still 
+
+		/* The medium priority and second high priority tasks are still
 		suspended.  Make sure to resume them before starting again. */
 		vTaskResume( xCreatedTasks[ evtMEDIUM_PRIORITY_INDEX ] );
 		vTaskResume( xCreatedTasks[ evtHIGHEST_PRIORITY_INDEX_2 ] );
@@ -357,7 +357,7 @@ BaseType_t xDummy = 0;
 		}
 	}
 
-	/* All the tasks blocked on the queue have a priority higher than the 
+	/* All the tasks blocked on the queue have a priority higher than the
 	controlling task.  Writing to the queue will therefore have caused this
 	task to be preempted.  By the time this line executes the event task will
 	have executed and incremented its counter.  Increment the expected counter
@@ -385,10 +385,10 @@ static BaseType_t xPreviousCheckVariable = 0;
 	{
 		xHealthStatus = pdFAIL;
 	}
-	
+
 	xPreviousCheckVariable = xCheckVariable;
-	
-	return xHealthStatus;	
+
+	return xHealthStatus;
 }
 
 

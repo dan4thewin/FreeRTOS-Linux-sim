@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -53,24 +53,24 @@
 
 
 /**
- * This is a very simple queue test.  See the BlockQ. c documentation for a more 
+ * This is a very simple queue test.  See the BlockQ. c documentation for a more
  * comprehensive version.
  *
- * Creates two tasks that communicate over a single queue.  One task acts as a 
- * producer, the other a consumer.  
+ * Creates two tasks that communicate over a single queue.  One task acts as a
+ * producer, the other a consumer.
  *
- * The producer loops for three iteration, posting an incrementing number onto the 
- * queue each cycle.  It then delays for a fixed period before doing exactly the 
+ * The producer loops for three iteration, posting an incrementing number onto the
+ * queue each cycle.  It then delays for a fixed period before doing exactly the
  * same again.
  *
- * The consumer loops emptying the queue.  Each item removed from the queue is 
- * checked to ensure it contains the expected value.  When the queue is empty it 
+ * The consumer loops emptying the queue.  Each item removed from the queue is
+ * checked to ensure it contains the expected value.  When the queue is empty it
  * blocks for a fixed period, then does the same again.
  *
- * All queue access is performed without blocking.  The consumer completely empties 
- * the queue each time it runs so the producer should never find the queue full.  
+ * All queue access is performed without blocking.  The consumer completely empties
+ * the queue each time it runs so the producer should never find the queue full.
  *
- * An error is flagged if the consumer obtains an unexpected value or the producer 
+ * An error is flagged if the consumer obtains an unexpected value or the producer
  * find the queue is full.
  *
  * \page PollQC pollQ.c
@@ -139,7 +139,7 @@ short sError = pdFALSE;
 	pxQueue = ( QueueHandle_t * ) pvParameters;
 
 	for( ;; )
-	{		
+	{
 		for( usLoop = 0; usLoop < usNumToProduce; ++usLoop )
 		{
 			/* Send an incrementing number on the queue without blocking. */
@@ -153,7 +153,7 @@ short sError = pdFALSE;
 			{
 				if( sError == pdFALSE )
 				{
-					/* If an error has ever been recorded we stop incrementing the 
+					/* If an error has ever been recorded we stop incrementing the
 					check variable. */
 					++sPollingProducerCount;
 				}
@@ -163,7 +163,7 @@ short sError = pdFALSE;
 			}
 		}
 
-		/* Wait before we start posting again to ensure the consumer runs and 
+		/* Wait before we start posting again to ensure the consumer runs and
 		empties the queue. */
 		vTaskDelay( xDelay );
 	}
@@ -186,7 +186,7 @@ short sError = pdFALSE;
 	pxQueue = ( QueueHandle_t * ) pvParameters;
 
 	for( ;; )
-	{		
+	{
 		/* Loop until the queue is empty. */
 		while( uxQueueMessagesWaiting( *pxQueue ) )
 		{
@@ -194,11 +194,11 @@ short sError = pdFALSE;
 			{
 				if( usData != usExpectedValue )
 				{
-					/* This is not what we expected to receive so an error has 
+					/* This is not what we expected to receive so an error has
 					occurred. */
 					vPrintDisplayMessage( &pcTaskErrorMsg );
 					sError = pdTRUE;
-					/* Catch-up to the value we received so our next expected value 
+					/* Catch-up to the value we received so our next expected value
 					should again be correct. */
 					usExpectedValue = usData;
 				}
@@ -206,7 +206,7 @@ short sError = pdFALSE;
 				{
 					if( sError == pdFALSE )
 					{
-						/* Only increment the check variable if no errors have 
+						/* Only increment the check variable if no errors have
 						occurred. */
 						++sPollingConsumerCount;
 					}
@@ -215,7 +215,7 @@ short sError = pdFALSE;
 			}
 		}
 
-		/* Now the queue is empty we block, allowing the producer to place more 
+		/* Now the queue is empty we block, allowing the producer to place more
 		items in the queue. */
 		vTaskDelay( xDelay );
 	}
@@ -229,7 +229,7 @@ static short sLastPollingConsumerCount = 0, sLastPollingProducerCount = 0;
 BaseType_t xReturn;
 
 	if( ( sLastPollingConsumerCount == sPollingConsumerCount ) ||
-		( sLastPollingProducerCount == sPollingProducerCount ) 
+		( sLastPollingProducerCount == sPollingProducerCount )
 	  )
 	{
 		xReturn = pdFALSE;

@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -53,21 +53,21 @@
 
 /*
 Changes from V1.2.3
-	
+
 	+ The created tasks now include calls to tskYIELD(), allowing them to be used
 	  with the cooperative scheduler.
 */
 
 /**
- * Creates eight tasks, each of which loops continuously performing an (emulated) 
+ * Creates eight tasks, each of which loops continuously performing an (emulated)
  * floating point calculation.
  *
- * All the tasks run at the idle priority and never block or yield.  This causes 
- * all eight tasks to time slice with the idle task.  Running at the idle priority 
+ * All the tasks run at the idle priority and never block or yield.  This causes
+ * all eight tasks to time slice with the idle task.  Running at the idle priority
  * means that these tasks will get pre-empted any time another task is ready to run
- * or a time slice occurs.  More often than not the pre-emption will occur mid 
- * calculation, creating a good test of the schedulers context switch mechanism - a 
- * calculation producing an unexpected result could be a symptom of a corruption in 
+ * or a time slice occurs.  More often than not the pre-emption will occur mid
+ * calculation, creating a good test of the schedulers context switch mechanism - a
+ * calculation producing an unexpected result could be a symptom of a corruption in
  * the context of a task.
  *
  * \page FlopC flop.c
@@ -89,14 +89,14 @@ Changes from V1.2.3
 #define mathSTACK_SIZE		( ( unsigned short ) 512 )
 #define mathNUMBER_OF_TASKS  ( 8 )
 
-/* Four tasks, each of which performs a different floating point calculation.  
+/* Four tasks, each of which performs a different floating point calculation.
 Each of the four is created twice. */
 static void vCompetingMathTask1( void *pvParameters );
 static void vCompetingMathTask2( void *pvParameters );
 static void vCompetingMathTask3( void *pvParameters );
 static void vCompetingMathTask4( void *pvParameters );
 
-/* These variables are used to check that all the tasks are still running.  If a 
+/* These variables are used to check that all the tasks are still running.  If a
 task gets a calculation wrong it will
 stop incrementing its check variable. */
 static volatile unsigned short usTaskCheck[ mathNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
@@ -128,7 +128,7 @@ short sError = pdFALSE;
 	/* Queue a message for printing to say the task has started. */
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
-	/* The variable this task increments to show it is still running is passed in 
+	/* The variable this task increments to show it is still running is passed in
 	as the parameter. */
 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
 
@@ -143,7 +143,7 @@ short sError = pdFALSE;
 
 		taskYIELD();
 
-		/* If the calculation does not match the expected constant, stop the 
+		/* If the calculation does not match the expected constant, stop the
 		increment of the check variable. */
 		if( fabs( d4 - dAnswer ) > 0.001 )
 		{
@@ -153,7 +153,7 @@ short sError = pdFALSE;
 
 		if( sError == pdFALSE )
 		{
-			/* If the calculation has always been correct, increment the check 
+			/* If the calculation has always been correct, increment the check
 			variable so we know this task is still running okay. */
 			( *pusTaskCheckVariable )++;
 		}
@@ -175,7 +175,7 @@ short sError = pdFALSE;
 	/* Queue a message for printing to say the task has started. */
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
-	/* The variable this task increments to show it is still running is passed in 
+	/* The variable this task increments to show it is still running is passed in
 	as the parameter. */
 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
 
@@ -189,8 +189,8 @@ short sError = pdFALSE;
 		d4 = ( d1 / d2 ) * d3;
 
 		taskYIELD();
-		
-		/* If the calculation does not match the expected constant, stop the 
+
+		/* If the calculation does not match the expected constant, stop the
 		increment of the check variable. */
 		if( fabs( d4 - dAnswer ) > 0.001 )
 		{
@@ -200,7 +200,7 @@ short sError = pdFALSE;
 
 		if( sError == pdFALSE )
 		{
-			/* If the calculation has always been correct, increment the check 
+			/* If the calculation has always been correct, increment the check
 			variable so we know
 			this task is still running okay. */
 			( *pusTaskCheckVariable )++;
@@ -224,14 +224,14 @@ short sError = pdFALSE;
 	/* Queue a message for printing to say the task has started. */
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
-	/* The variable this task increments to show it is still running is passed in 
+	/* The variable this task increments to show it is still running is passed in
 	as the parameter. */
 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
 
 	pdArray = ( portDOUBLE * ) pvPortMalloc( ( size_t ) 250 * sizeof( portDOUBLE ) );
 
-	/* Keep filling an array, keeping a running total of the values placed in the 
-	array.  Then run through the array adding up all the values.  If the two totals 
+	/* Keep filling an array, keeping a running total of the values placed in the
+	array.  Then run through the array adding up all the values.  If the two totals
 	do not match, stop the check variable from incrementing. */
 	for( ;; )
 	{
@@ -241,7 +241,7 @@ short sError = pdFALSE;
 		for( usPosition = 0; usPosition < usArraySize; usPosition++ )
 		{
 			pdArray[ usPosition ] = ( portDOUBLE ) usPosition + 5.5;
-			dTotal1 += ( portDOUBLE ) usPosition + 5.5;	
+			dTotal1 += ( portDOUBLE ) usPosition + 5.5;
 		}
 
 		taskYIELD();
@@ -262,7 +262,7 @@ short sError = pdFALSE;
 
 		if( sError == pdFALSE )
 		{
-			/* If the calculation has always been correct, increment the check 
+			/* If the calculation has always been correct, increment the check
 			variable so we know	this task is still running okay. */
 			( *pusTaskCheckVariable )++;
 		}
@@ -283,14 +283,14 @@ short sError = pdFALSE;
 	/* Queue a message for printing to say the task has started. */
 	vPrintDisplayMessage( &pcTaskStartMsg );
 
-	/* The variable this task increments to show it is still running is passed in 
+	/* The variable this task increments to show it is still running is passed in
 	as the parameter. */
 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
 
 	pdArray = ( portDOUBLE * ) pvPortMalloc( ( size_t ) 250 * sizeof( portDOUBLE ) );
 
-	/* Keep filling an array, keeping a running total of the values placed in the 
-	array.  Then run through the array adding up all the values.  If the two totals 
+	/* Keep filling an array, keeping a running total of the values placed in the
+	array.  Then run through the array adding up all the values.  If the two totals
 	do not match, stop the check variable from incrementing. */
 	for( ;; )
 	{
@@ -300,7 +300,7 @@ short sError = pdFALSE;
 		for( usPosition = 0; usPosition < usArraySize; usPosition++ )
 		{
 			pdArray[ usPosition ] = ( portDOUBLE ) usPosition * 12.123;
-			dTotal1 += ( portDOUBLE ) usPosition * 12.123;	
+			dTotal1 += ( portDOUBLE ) usPosition * 12.123;
 		}
 
 		taskYIELD();
@@ -321,7 +321,7 @@ short sError = pdFALSE;
 
 		if( sError == pdFALSE )
 		{
-			/* If the calculation has always been correct, increment the check 
+			/* If the calculation has always been correct, increment the check
 			variable so we know	this task is still running okay. */
 			( *pusTaskCheckVariable )++;
 		}
@@ -332,12 +332,12 @@ short sError = pdFALSE;
 /* This is called to check that all the created tasks are still running. */
 BaseType_t xAreMathsTaskStillRunning( void )
 {
-/* Keep a history of the check variables so we know if they have been incremented 
+/* Keep a history of the check variables so we know if they have been incremented
 since the last call. */
 static unsigned short usLastTaskCheck[ mathNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
 BaseType_t xReturn = pdTRUE, xTask;
 
-	/* Check the maths tasks are still running by ensuring their check variables 
+	/* Check the maths tasks are still running by ensuring their check variables
 	are still incrementing. */
 	for( xTask = 0; xTask < mathNUMBER_OF_TASKS; xTask++ )
 	{

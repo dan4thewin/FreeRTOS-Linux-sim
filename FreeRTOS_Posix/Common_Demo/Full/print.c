@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -52,22 +52,22 @@
 */
 
 /**
- * Manages a queue of strings that are waiting to be displayed.  This is used to 
+ * Manages a queue of strings that are waiting to be displayed.  This is used to
  * ensure mutual exclusion of console output.
  *
- * A task wishing to display a message will call vPrintDisplayMessage (), with a 
- * pointer to the string as the parameter. The pointer is posted onto the 
+ * A task wishing to display a message will call vPrintDisplayMessage (), with a
+ * pointer to the string as the parameter. The pointer is posted onto the
  * xPrintQueue queue.
  *
- * The task spawned in main. c blocks on xPrintQueue.  When a message becomes 
- * available it calls pcPrintGetNextMessage () to obtain a pointer to the next 
- * string, then uses the functions defined in the portable layer FileIO. c to 
+ * The task spawned in main. c blocks on xPrintQueue.  When a message becomes
+ * available it calls pcPrintGetNextMessage () to obtain a pointer to the next
+ * string, then uses the functions defined in the portable layer FileIO. c to
  * display the message.
  *
  * <b>NOTE:</b>
- * Using console IO can disrupt real time performance - depending on the port.  
- * Standard C IO routines are not designed for real time applications.  While 
- * standard IO is useful for demonstration and debugging an alternative method 
+ * Using console IO can disrupt real time performance - depending on the port.
+ * Standard C IO routines are not designed for real time applications.  While
+ * standard IO is useful for demonstration and debugging an alternative method
  * should be used if you actually require console IO as part of your application.
  *
  * \page PrintC print.c

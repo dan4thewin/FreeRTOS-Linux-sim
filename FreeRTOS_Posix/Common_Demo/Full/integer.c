@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -53,20 +53,20 @@
 
 /*
 Changes from V1.2.3
-	
+
 	+ The created tasks now include calls to tskYIELD(), allowing them to be used
 	  with the cooperative scheduler.
 */
 
 /**
- * This does the same as flop. c, but uses variables of type long instead of 
- * type double.  
+ * This does the same as flop. c, but uses variables of type long instead of
+ * type double.
  *
- * As with flop. c, the tasks created in this file are a good test of the 
- * scheduler context switch mechanism.  The processor has to access 32bit 
- * variables in two or four chunks (depending on the processor).  The low 
- * priority of these tasks means there is a high probability that a context 
- * switch will occur mid calculation.  See the flop. c documentation for 
+ * As with flop. c, the tasks created in this file are a good test of the
+ * scheduler context switch mechanism.  The processor has to access 32bit
+ * variables in two or four chunks (depending on the processor).  The low
+ * priority of these tasks means there is a high probability that a context
+ * switch will occur mid calculation.  See the flop. c documentation for
  * more information.
  *
  * \page IntegerC integer.c
@@ -94,14 +94,14 @@ Changes from V1.2.1
 #define intgSTACK_SIZE		( ( unsigned short ) 256 )
 #define intgNUMBER_OF_TASKS  ( 8 )
 
-/* Four tasks, each of which performs a different calculation on four byte 
+/* Four tasks, each of which performs a different calculation on four byte
 variables.  Each of the four is created twice. */
 static void vCompeteingIntMathTask1( void *pvParameters );
 static void vCompeteingIntMathTask2( void *pvParameters );
 static void vCompeteingIntMathTask3( void *pvParameters );
 static void vCompeteingIntMathTask4( void *pvParameters );
 
-/* These variables are used to check that all the tasks are still running.  If a 
+/* These variables are used to check that all the tasks are still running.  If a
 task gets a calculation wrong it will stop incrementing its check variable. */
 static volatile unsigned short usTaskCheck[ intgNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
 /*-----------------------------------------------------------*/
@@ -288,8 +288,8 @@ const char * const pcTaskFailMsg = "Integer math task 4 failed.\r\n";
 	/* Create the array we are going to use for our check calculation. */
 	plArray = ( long * ) pvPortMalloc( ( size_t ) 250 * sizeof( long ) );
 
-	/* Keep filling the array, keeping a running total of the values placed in the 
-	array.  Then run through the array adding up all the values.  If the two totals 
+	/* Keep filling the array, keeping a running total of the values placed in the
+	array.  Then run through the array adding up all the values.  If the two totals
 	do not match, stop the check variable from incrementing. */
 	for( ;; )
 	{
@@ -299,11 +299,11 @@ const char * const pcTaskFailMsg = "Integer math task 4 failed.\r\n";
 		for( usPosition = 0; usPosition < usArraySize; usPosition++ )
 		{
 			plArray[ usPosition ] = ( long ) usPosition * ( long ) 12;
-			lTotal1 += ( long ) usPosition * ( long ) 12;	
+			lTotal1 += ( long ) usPosition * ( long ) 12;
 		}
 
 		taskYIELD();
-	
+
 		for( usPosition = 0; usPosition < usArraySize; usPosition++ )
 		{
 			lTotal2 += plArray[ usPosition ];
@@ -320,7 +320,7 @@ const char * const pcTaskFailMsg = "Integer math task 4 failed.\r\n";
 
 		if( sError == pdFALSE )
 		{
-			/* If the calculation has always been correct, increment the check 
+			/* If the calculation has always been correct, increment the check
 			variable so we know	this task is still running okay. */
 			( *pusTaskCheckVariable )++;
 		}
@@ -331,12 +331,12 @@ const char * const pcTaskFailMsg = "Integer math task 4 failed.\r\n";
 /* This is called to check that all the created tasks are still running. */
 BaseType_t xAreIntegerMathsTaskStillRunning( void )
 {
-/* Keep a history of the check variables so we know if they have been incremented 
+/* Keep a history of the check variables so we know if they have been incremented
 since the last call. */
 static unsigned short usLastTaskCheck[ intgNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
 BaseType_t xReturn = pdTRUE, xTask;
 
-	/* Check the maths tasks are still running by ensuring their check variables 
+	/* Check the maths tasks are still running by ensuring their check variables
 	are still incrementing. */
 	for( xTask = 0; xTask < intgNUMBER_OF_TASKS; xTask++ )
 	{

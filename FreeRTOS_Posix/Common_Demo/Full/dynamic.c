@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -52,31 +52,31 @@
 */
 
 /**
- * The first test creates three tasks - two counter tasks (one continuous count 
- * and one limited count) and one controller.  A "count" variable is shared 
- * between all three tasks.  The two counter tasks should never be in a "ready" 
- * state at the same time.  The controller task runs at the same priority as 
- * the continuous count task, and at a lower priority than the limited count 
+ * The first test creates three tasks - two counter tasks (one continuous count
+ * and one limited count) and one controller.  A "count" variable is shared
+ * between all three tasks.  The two counter tasks should never be in a "ready"
+ * state at the same time.  The controller task runs at the same priority as
+ * the continuous count task, and at a lower priority than the limited count
  * task.
  *
  * One counter task loops indefinitely, incrementing the shared count variable
  * on each iteration.  To ensure it has exclusive access to the variable it
- * raises it's priority above that of the controller task before each 
+ * raises it's priority above that of the controller task before each
  * increment, lowering it again to it's original priority before starting the
  * next iteration.
  *
  * The other counter task increments the shared count variable on each
  * iteration of it's loop until the count has reached a limit of 0xff - at
- * which point it suspends itself.  It will not start a new loop until the 
- * controller task has made it "ready" again by calling vTaskResume ().  
- * This second counter task operates at a higher priority than controller 
- * task so does not need to worry about mutual exclusion of the counter 
+ * which point it suspends itself.  It will not start a new loop until the
+ * controller task has made it "ready" again by calling vTaskResume ().
+ * This second counter task operates at a higher priority than controller
+ * task so does not need to worry about mutual exclusion of the counter
  * variable.
  *
  * The controller task is in two sections.  The first section controls and
- * monitors the continuous count task.  When this section is operational the 
- * limited count task is suspended.  Likewise, the second section controls 
- * and monitors the limited count task.  When this section is operational the 
+ * monitors the continuous count task.  When this section is operational the
+ * limited count task is suspended.  Likewise, the second section controls
+ * and monitors the limited count task.  When this section is operational the
  * continuous count task is suspended.
  *
  * In the first section the controller task first takes a copy of the shared
@@ -86,11 +86,11 @@
  * the continuous count task will execute and increment the shared variable.
  * When the controller task wakes it checks that the continuous count task
  * has executed by comparing the copy of the shared variable with its current
- * value.  This time, to ensure mutual exclusion, the scheduler itself is 
- * suspended with a call to vTaskSuspendAll ().  This is for demonstration 
+ * value.  This time, to ensure mutual exclusion, the scheduler itself is
+ * suspended with a call to vTaskSuspendAll ().  This is for demonstration
  * purposes only and is not a recommended technique due to its inefficiency.
  *
- * After a fixed number of iterations the controller task suspends the 
+ * After a fixed number of iterations the controller task suspends the
  * continuous count task, and moves on to its second section.
  *
  * At the start of the second section the shared variable is cleared to zero.
@@ -102,7 +102,7 @@
  * a check on the shared variable to ensure everything is as expected.
  *
  *
- * The second test consists of a couple of very simple tasks that post onto a 
+ * The second test consists of a couple of very simple tasks that post onto a
  * queue while the scheduler is suspended.  This test was added to test parts
  * of the scheduler not exercised by the first test.
  *
@@ -121,14 +121,14 @@ Changes from V2.0.0
 
 	+ Delay periods are now specified using variables and constants of
 	  TickType_t rather than unsigned long.
-	+ Added a second, simple test that uses the functions 
+	+ Added a second, simple test that uses the functions
 	  vQueueReceiveWhenSuspendedTask() and vQueueSendWhenSuspendedTask().
 
 Changes from V3.1.1
 
 	+ Added a third simple test that uses the vTaskPrioritySet() function
 	  while the scheduler is suspended.
-	+ Modified the controller task slightly to test the calling of 
+	+ Modified the controller task slightly to test the calling of
 	  vTaskResumeAll() while the scheduler is suspended.
 */
 
@@ -177,7 +177,7 @@ static void prvChangePriorityHelperTask( void *pvParameters );
 to the controller task to prevent them having to be file scope. */
 static TaskHandle_t xContinuousIncrementHandle, xLimitedIncrementHandle, xChangePriorityWhenSuspendedHandle;
 
-/* The shared counter variable.  This is passed in as a parameter to the two 
+/* The shared counter variable.  This is passed in as a parameter to the two
 counter variables for demonstration purposes. */
 static unsigned long ulCounter;
 
@@ -217,7 +217,7 @@ void vStartDynamicPriorityTasks( void )
 
 /*
  * Just loops around incrementing the shared variable until the limit has been
- * reached.  Once the limit has been reached it suspends itself. 
+ * reached.  Once the limit has been reached it suspends itself.
  */
 static void vLimitedIncrementTask( void * pvParameters )
 {
@@ -234,12 +234,12 @@ unsigned long *pulCounter;
 	for( ;; )
 	{
 		/* Just count up to a value then suspend. */
-		( *pulCounter )++;	
-		
+		( *pulCounter )++;
+
 		if( *pulCounter >= priMAX_COUNT )
 		{
 			vTaskSuspend( NULL );
-		} 	
+		}
 	}
 }
 /*-----------------------------------------------------------*/
@@ -257,7 +257,7 @@ UBaseType_t uxOurPriority;
 	the task. */
 	pulCounter = ( unsigned long * ) pvParameters;
 
-	/* Query our priority so we can raise it when exclusive access to the 
+	/* Query our priority so we can raise it when exclusive access to the
 	shared variable is required. */
 	uxOurPriority = uxTaskPriorityGet( NULL );
 
@@ -266,7 +266,7 @@ UBaseType_t uxOurPriority;
 		/* Raise our priority above the controller task to ensure a context
 		switch does not occur while we are accessing this variable. */
 		vTaskPrioritySet( NULL, uxOurPriority + 1 );
-			( *pulCounter )++;		
+			( *pulCounter )++;
 		vTaskPrioritySet( NULL, uxOurPriority );
 
 		#if configUSE_PREEMPTION == 0
@@ -308,11 +308,11 @@ const char * const pcTaskFailMsg = "Priority manipulation Task Failed\r\n";
 			vTaskSuspend( xContinuousIncrementHandle );
 				ulLastCounter = ulCounter;
 			vTaskResume( xContinuousIncrementHandle );
-			
+
 			/* Now delay to ensure the other task has processor time. */
 			vTaskDelay( priSLEEP_TIME );
 
-			/* Check the shared variable again.  This time to ensure mutual 
+			/* Check the shared variable again.  This time to ensure mutual
 			exclusion the whole scheduler will be locked.  This is just for
 			demo purposes! */
 			vTaskSuspendAll();
@@ -341,7 +341,7 @@ const char * const pcTaskFailMsg = "Priority manipulation Task Failed\r\n";
 
 		/* Resume the limited count task which has a higher priority than us.
 		We should therefore not return from this call until the limited count
-		task has suspended itself with a known value in the counter variable. 
+		task has suspended itself with a known value in the counter variable.
 		The scheduler suspension is not necessary but is included for test
 		purposes. */
 		vTaskSuspendAll();
@@ -428,7 +428,7 @@ BaseType_t xGotValue;
 	{
 		do
 		{
-			/* Suspending the scheduler here is fairly pointless and 
+			/* Suspending the scheduler here is fairly pointless and
 			undesirable for a normal application.  It is done here purely
 			to test the scheduler.  The inner xTaskResumeAll() should
 			never return pdTRUE as the scheduler is still locked by the
@@ -475,8 +475,8 @@ const char * const pcTaskFailMsg = "Priority change when suspended task failed.\
 	( void ) pvParameters;
 
 	/* Queue a message for printing to say the task has started. */
-	vPrintDisplayMessage( &pcTaskStartMsg );	
-	
+	vPrintDisplayMessage( &pcTaskStartMsg );
+
 	for( ;; )
 	{
 		/* Start with the counter at 0 so we know what the counter should be
@@ -503,7 +503,7 @@ const char * const pcTaskFailMsg = "Priority change when suspended task failed.\
 		{
 			vTaskPrioritySet( xChangePriorityWhenSuspendedHandle, ( configMAX_PRIORITIES - 1 ) );
 
-			/* Again, even though the helper task has a priority greater than 
+			/* Again, even though the helper task has a priority greater than
 			ours, it should not have executed yet because the scheduler is
 			suspended. */
 			portENTER_CRITICAL();
@@ -517,8 +517,8 @@ const char * const pcTaskFailMsg = "Priority change when suspended task failed.\
 			portEXIT_CRITICAL();
 		}
 		xTaskResumeAll();
-		
-		/* Now the scheduler has been resumed the helper task should 
+
+		/* Now the scheduler has been resumed the helper task should
 		immediately preempt us and execute.  When it executes it will increment
 		the ulPrioritySetCounter exactly once before suspending itself.
 
@@ -533,14 +533,14 @@ const char * const pcTaskFailMsg = "Priority change when suspended task failed.\
 		}
 		portEXIT_CRITICAL();
 
-		/* Delay until we try this again. */		
+		/* Delay until we try this again. */
 		vTaskDelay( priSLEEP_TIME * 2 );
-		
-		/* Set the priority of the helper task back ready for the next 
+
+		/* Set the priority of the helper task back ready for the next
 		execution of this task. */
 		vTaskSuspendAll();
-			vTaskPrioritySet( xChangePriorityWhenSuspendedHandle, tskIDLE_PRIORITY );				
-		xTaskResumeAll();				
+			vTaskPrioritySet( xChangePriorityWhenSuspendedHandle, tskIDLE_PRIORITY );
+		xTaskResumeAll();
 	}
 }
 /*-----------------------------------------------------------*/
@@ -553,7 +553,7 @@ static void prvChangePriorityHelperTask( void *pvParameters )
 	for( ;; )
 	{
 		/* This is the helper task for prvChangePriorityWhenSuspendedTask().
-		It has it's priority raised and lowered.  When it runs it simply 
+		It has it's priority raised and lowered.  When it runs it simply
 		increments the counter then suspends itself again.  This allows
 		prvChangePriorityWhenSuspendedTask() to know how many times it has
 		executed. */
@@ -566,7 +566,7 @@ static void prvChangePriorityHelperTask( void *pvParameters )
 /* Called to check that all the created tasks are still running without error. */
 BaseType_t xAreDynamicPriorityTasksStillRunning( void )
 {
-/* Keep a history of the check variables so we know if it has been incremented 
+/* Keep a history of the check variables so we know if it has been incremented
 since the last call. */
 static unsigned short usLastTaskCheck = ( unsigned short ) 0;
 BaseType_t xReturn = pdTRUE;

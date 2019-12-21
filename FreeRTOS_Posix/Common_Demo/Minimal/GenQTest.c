@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -52,12 +52,12 @@
 */
 
 
-/* 
- * Tests the extra queue functionality introduced in FreeRTOS.org V4.5.0 - 
- * including xQueueSendToFront(), xQueueSendToBack(), xQueuePeek() and 
- * mutex behaviour. 
+/*
+ * Tests the extra queue functionality introduced in FreeRTOS.org V4.5.0 -
+ * including xQueueSendToFront(), xQueueSendToBack(), xQueuePeek() and
+ * mutex behaviour.
  *
- * See the comments above the prvSendFrontAndBackTest() and 
+ * See the comments above the prvSendFrontAndBackTest() and
  * prvLowPriorityMutexTask() prototypes below for more information.
  */
 
@@ -139,10 +139,10 @@ SemaphoreHandle_t xMutex;
 	xQueue = xQueueCreate( genqQUEUE_LENGTH, sizeof( unsigned portLONG ) );
 
 	/* vQueueAddToRegistry() adds the queue to the queue registry, if one is
-	in use.  The queue registry is provided as a means for kernel aware 
+	in use.  The queue registry is provided as a means for kernel aware
 	debuggers to locate queues and has no purpose if a kernel aware debugger
 	is not being used.  The call to vQueueAddToRegistry() will be removed
-	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is 
+	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is
 	defined to be less than 1. */
 	vQueueAddToRegistry( xQueue, ( signed portCHAR * ) "Gen_Queue_Test" );
 
@@ -155,10 +155,10 @@ SemaphoreHandle_t xMutex;
 	xMutex = xSemaphoreCreateMutex();
 
 	/* vQueueAddToRegistry() adds the mutex to the registry, if one is
-	in use.  The registry is provided as a means for kernel aware 
+	in use.  The registry is provided as a means for kernel aware
 	debuggers to locate mutexes and has no purpose if a kernel aware debugger
 	is not being used.  The call to vQueueAddToRegistry() will be removed
-	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is 
+	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is
 	defined to be less than 1. */
 	vQueueAddToRegistry( ( QueueHandle_t ) xMutex, ( signed portCHAR * ) "Gen_Queue_Mutex" );
 
@@ -178,7 +178,7 @@ QueueHandle_t xQueue;
 
 	#ifdef USE_STDIO
 	void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
-	
+
 		const portCHAR * const pcTaskStartMsg = "Queue SendToFront/SendToBack/Peek test started.\r\n";
 
 		/* Queue a message for printing to say the task has started. */
@@ -300,7 +300,7 @@ QueueHandle_t xQueue;
 			{
 				xErrorDetected = pdTRUE;
 			}
-			
+
 
 			/* Now try receiving the data for real.  The value should be the
 			same.  Clobber the value first so we know we really received it. */
@@ -405,7 +405,7 @@ SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 
 	#ifdef USE_STDIO
 	void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
-	
+
 		const portCHAR * const pcTaskStartMsg = "Mutex with priority inheritance test started.\r\n";
 
 		/* Queue a message for printing to say the task has started. */
@@ -492,7 +492,7 @@ SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 
 		#if configUSE_PREEMPTION == 0
 			taskYIELD();
-		#endif		
+		#endif
 	}
 }
 /*-----------------------------------------------------------*/
@@ -538,7 +538,7 @@ SemaphoreHandle_t xMutex = ( SemaphoreHandle_t ) pvParameters;
 		if( xSemaphoreGive( xMutex ) != pdPASS )
 		{
 			xErrorDetected = pdTRUE;
-		}		
+		}
 	}
 }
 /*-----------------------------------------------------------*/
@@ -561,7 +561,7 @@ static unsigned portLONG ulLastLoopCounter = 0, ulLastLoopCounter2 = 0;
 	}
 
 	ulLastLoopCounter = ulLoopCounter;
-	ulLastLoopCounter2 = ulLoopCounter2;	
+	ulLastLoopCounter2 = ulLoopCounter2;
 
 	/* Errors detected in the task itself will have latched xErrorDetected
 	to true. */

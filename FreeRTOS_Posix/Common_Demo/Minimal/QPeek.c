@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -52,7 +52,7 @@
 */
 
 
-/* 
+/*
  * Tests the behaviour when data is peeked from a queue when there are
  * multiple tasks blocked on the queue.
  */
@@ -112,10 +112,10 @@ QueueHandle_t xQueue;
 	xQueue = xQueueCreate( qpeekQUEUE_LENGTH, sizeof( unsigned portLONG ) );
 
 	/* vQueueAddToRegistry() adds the queue to the queue registry, if one is
-	in use.  The queue registry is provided as a means for kernel aware 
+	in use.  The queue registry is provided as a means for kernel aware
 	debuggers to locate queues and has no purpose if a kernel aware debugger
 	is not being used.  The call to vQueueAddToRegistry() will be removed
-	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is 
+	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is
 	defined to be less than 1. */
 	vQueueAddToRegistry( xQueue, ( signed portCHAR * ) "QPeek_Test_Queue" );
 
@@ -137,7 +137,7 @@ unsigned portLONG ulValue;
 	#ifdef USE_STDIO
 	{
 		void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
-	
+
 		const portCHAR * const pcTaskStartMsg = "Queue peek test started.\r\n";
 
 		/* Queue a message for printing to say the task has started. */
@@ -190,7 +190,7 @@ unsigned portLONG ulValue;
 			xErrorDetected = pdTRUE;
 		}
 
-		/* Now we will block again as the queue is once more empty.  The low 
+		/* Now we will block again as the queue is once more empty.  The low
 		priority task can then execute again. */
 		if( xQueuePeek( xQueue, &ulValue, portMAX_DELAY ) != pdPASS )
 		{
@@ -233,7 +233,7 @@ unsigned portLONG ulValue;
 			xErrorDetected = pdTRUE;
 		}
 
-		vTaskSuspend( NULL );		
+		vTaskSuspend( NULL );
 	}
 }
 /*-----------------------------------------------------------*/
@@ -288,7 +288,7 @@ unsigned portLONG ulValue;
 			xErrorDetected = pdTRUE;
 		}
 
-		vTaskSuspend( NULL );				
+		vTaskSuspend( NULL );
 	}
 }
 /*-----------------------------------------------------------*/
@@ -341,7 +341,7 @@ unsigned portLONG ulValue;
 
 	for( ;; )
 	{
-		/* Write some data to the queue.  This should unblock the highest 
+		/* Write some data to the queue.  This should unblock the highest
 		priority task that is waiting to peek data from the queue. */
 		ulValue = 0x11223344;
 		if( xQueueSendToBack( xQueue, &ulValue, qpeekNO_BLOCK ) != pdPASS )
@@ -381,7 +381,7 @@ unsigned portLONG ulValue;
 		{
 			/* We did not receive the expected value. */
 		}
-		
+
 		/* Lets just delay a while as this is an intensive test as we don't
 		want to starve other tests of processing time. */
 		vTaskDelay( qpeekSHORT_DELAY );
@@ -415,7 +415,7 @@ unsigned portLONG ulValue;
 		and repeat the whole thing.  The medium priority task should not be
 		suspended as it was not able to peek the data in this last case. */
 		vTaskResume( xHighPriorityTask );
-		vTaskResume( xHighestPriorityTask );		
+		vTaskResume( xHighestPriorityTask );
 
 		/* Lets just delay a while as this is an intensive test as we don't
 		want to starve other tests of processing time. */

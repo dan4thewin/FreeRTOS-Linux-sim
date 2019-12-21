@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -52,17 +52,17 @@
 */
 
 /**
- * Create a single persistent task which periodically dynamically creates another 
- * four tasks.  The original task is called the creator task, the four tasks it 
+ * Create a single persistent task which periodically dynamically creates another
+ * four tasks.  The original task is called the creator task, the four tasks it
  * creates are called suicidal tasks.
  *
- * Two of the created suicidal tasks kill one other suicidal task before killing 
- * themselves - leaving just the original task remaining.  
+ * Two of the created suicidal tasks kill one other suicidal task before killing
+ * themselves - leaving just the original task remaining.
  *
- * The creator task must be spawned after all of the other demo application tasks 
- * as it keeps a check on the number of tasks under the scheduler control.  The 
- * number of tasks it expects to see running should never be greater than the 
- * number of tasks that were in existence when the creator task was spawned, plus 
+ * The creator task must be spawned after all of the other demo application tasks
+ * as it keeps a check on the number of tasks under the scheduler control.  The
+ * number of tasks it expects to see running should never be greater than the
+ * number of tasks that were in existence when the creator task was spawned, plus
  * one set of four suicidal tasks.  If this number is exceeded an error is flagged.
  *
  * \page DeathC death.c
@@ -89,23 +89,23 @@ Changes from V2.0.0
 
 #define deathSTACK_SIZE		( ( unsigned short ) 512 )
 
-/* The task originally created which is responsible for periodically dynamically 
+/* The task originally created which is responsible for periodically dynamically
 creating another four tasks. */
 static void vCreateTasks( void *pvParameters );
 
 /* The task function of the dynamically created tasks. */
 static void vSuicidalTask( void *pvParameters );
 
-/* A variable which is incremented every time the dynamic tasks are created.  This 
+/* A variable which is incremented every time the dynamic tasks are created.  This
 is used to check that the task is still running. */
 static volatile short sCreationCount = 0;
 
-/* Used to store the number of tasks that were originally running so the creator 
+/* Used to store the number of tasks that were originally running so the creator
 task can tell if any of the suicidal tasks have failed to die. */
 static volatile UBaseType_t uxTasksRunningAtStart = 0;
 static const UBaseType_t uxMaxNumberOfExtraTasksRunning = 5;
 
-/* Used to store a handle to the tasks that should be killed by a suicidal task, 
+/* Used to store a handle to the tasks that should be killed by a suicidal task,
 before it kills itself. */
 TaskHandle_t xCreatedTask1, xCreatedTask2;
 
@@ -115,14 +115,14 @@ void vCreateSuicidalTasks( UBaseType_t uxPriority )
 {
 UBaseType_t *puxPriority;
 
-	/* Create the Creator tasks - passing in as a parameter the priority at which 
+	/* Create the Creator tasks - passing in as a parameter the priority at which
 	the suicidal tasks should be created. */
 	puxPriority = ( UBaseType_t * ) pvPortMalloc( sizeof( UBaseType_t ) );
 	*puxPriority = uxPriority;
 
 	xTaskCreate( vCreateTasks, "CREATOR", deathSTACK_SIZE, ( void * ) puxPriority, uxPriority, NULL );
 
-	/* Record the number of tasks that are running now so we know if any of the 
+	/* Record the number of tasks that are running now so we know if any of the
 	suicidal tasks have failed to be killed. */
 	uxTasksRunningAtStart = uxTaskGetNumberOfTasks();
 }
@@ -136,8 +136,8 @@ const TickType_t xDelay = ( TickType_t ) 500 / portTICK_RATE_MS;
 
 	if( pvParameters != NULL )
 	{
-		/* This task is periodically created four times.  Tow created tasks are 
-		passed a handle to the other task so it can kill it before killing itself.  
+		/* This task is periodically created four times.  Tow created tasks are
+		passed a handle to the other task so it can kill it before killing itself.
 		The other task is passed in null. */
 		xTaskToKill = *( TaskHandle_t* )pvParameters;
 	}
@@ -195,7 +195,7 @@ const char * const pcTaskStartMsg = "Create task started.\r\n";
 }
 /*-----------------------------------------------------------*/
 
-/* This is called to check that the creator task is still running and that there 
+/* This is called to check that the creator task is still running and that there
 are not any more than four extra tasks. */
 BaseType_t xIsCreateTaskStillRunning( void )
 {
@@ -207,7 +207,7 @@ UBaseType_t uxTasksRunningNow;
 	{
 		sReturn = pdFALSE;
 	}
-	
+
 	uxTasksRunningNow = uxTaskGetNumberOfTasks();
 
 	if( uxTasksRunningNow < uxTasksRunningAtStart )

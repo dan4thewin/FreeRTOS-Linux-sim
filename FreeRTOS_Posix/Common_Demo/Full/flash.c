@@ -33,9 +33,9 @@
     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public 
-    License and the FreeRTOS license exception along with FreeRTOS; if not it 
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained 
+    more details. You should have received a copy of the GNU General Public
+    License and the FreeRTOS license exception along with FreeRTOS; if not it
+    can be viewed here: http://www.freertos.org/a00114.html and also obtained
     by writing to Richard Barry, contact details for whom are available on the
     FreeRTOS WEB site.
 
@@ -53,13 +53,13 @@
 
 
 /**
- * Creates eight tasks, each of which flash an LED at a different rate.  The first 
+ * Creates eight tasks, each of which flash an LED at a different rate.  The first
  * LED flashes every 125ms, the second every 250ms, the third every 375ms, etc.
  *
- * The LED flash tasks provide instant visual feedback.  They show that the scheduler 
+ * The LED flash tasks provide instant visual feedback.  They show that the scheduler
  * is still operational.
  *
- * The PC port uses the standard parallel port for outputs, the Flashlite 186 port 
+ * The PC port uses the standard parallel port for outputs, the Flashlite 186 port
  * uses IO port F.
  *
  * \page flashC flash.c
@@ -99,7 +99,7 @@ typedef struct LED_PARAMETERS
 	TickType_t xFlashRate;	/*< The rate at which the LED should flash. */
 } xLEDParameters;
 
-/* The task that is created eight times - each time with a different xLEDParaemtes 
+/* The task that is created eight times - each time with a different xLEDParaemtes
 structure passed in as the parameter. */
 static void vLEDFlashTask( void *pvParameters );
 
@@ -118,7 +118,7 @@ const TickType_t xFlashRate = 125;
 	/* Create the eight tasks. */
 	for( uxLEDTask = 0; uxLEDTask < uxNumOfLEDs; ++uxLEDTask )
 	{
-		/* Create and complete the structure used to pass parameters to the next 
+		/* Create and complete the structure used to pass parameters to the next
 		created task. */
 		pxLEDParameters = ( xLEDParameters * ) pvPortMalloc( sizeof( xLEDParameters ) );
 		pxLEDParameters->uxLED = uxLEDTask;
