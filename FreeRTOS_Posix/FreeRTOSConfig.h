@@ -84,7 +84,7 @@
 #define configQUEUE_REGISTRY_SIZE		0
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY	1
 
-#define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 10 )
+#define configMAX_PRIORITIES			( 10U )
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Set the following definitions to 1 to include the API function, or zero
@@ -103,6 +103,9 @@ to exclude the API function. */
 extern void vMainQueueSendPassed( void );
 #define traceQUEUE_SEND( pxQueue ) vMainQueueSendPassed()
 
-#define configGENERATE_RUN_TIME_STATS		1
+#define configGENERATE_RUN_TIME_STATS			1
+#define configUSE_STATS_FORMATTING_FUNCTIONS	1
+
+#define configENABLE_BACKWARD_COMPATIBILITY		0
 
 #endif /* FREERTOS_CONFIG_H */

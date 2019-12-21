@@ -201,7 +201,6 @@ void vPortStartFirstTask( void )
  */
 BaseType_t xPortStartScheduler( void )
 {
-BaseType_t xResult;
 int iSignal;
 sigset_t xSignals;
 sigset_t xSignalToBlock;
@@ -240,8 +239,8 @@ portLONG lIndex;
 
 	printf( "Cleaning Up, Exiting.\n" );
 	/* Cleanup the mutexes */
-	xResult = pthread_mutex_destroy( &xSuspendResumeThreadMutex );
-	xResult = pthread_mutex_destroy( &xSingleThreadMutex );
+	( void ) pthread_mutex_destroy( &xSuspendResumeThreadMutex );
+	( void ) pthread_mutex_destroy( &xSingleThreadMutex );
 	vPortFree( (void *)pxThreads );
 
 	/* Should not get here! */
@@ -252,13 +251,12 @@ portLONG lIndex;
 void vPortEndScheduler( void )
 {
 BaseType_t xNumberOfThreads;
-BaseType_t xResult;
 	for ( xNumberOfThreads = 0; xNumberOfThreads < MAX_NUMBER_OF_TASKS; xNumberOfThreads++ )
 	{
 		if ( ( pthread_t )NULL != pxThreads[ xNumberOfThreads ].hThread )
 		{
 			/* Kill all of the threads, they are in the detached state. */
-			xResult = pthread_cancel( pxThreads[ xNumberOfThreads ].hThread );
+			( void ) pthread_cancel( pxThreads[ xNumberOfThreads ].hThread );
 		}
 	}
 
@@ -452,7 +450,6 @@ void vPortForciblyEndThread( void *pxTaskToDelete )
 TaskHandle_t hTaskToDelete = ( TaskHandle_t )pxTaskToDelete;
 pthread_t xTaskToDelete;
 pthread_t xTaskToResume;
-BaseType_t xResult;
 
 	if ( 0 == pthread_mutex_lock( &xSingleThreadMutex ) )
 	{
@@ -473,7 +470,7 @@ BaseType_t xResult;
 			{
 				/* Send a signal to wake the task so that it definitely cancels. */
 				pthread_testcancel();
-				xResult = pthread_cancel( xTaskToDelete );
+				( void ) pthread_cancel( xTaskToDelete );
 				/* Pthread Clean-up function will note the cancellation. */
 			}
 			(void)pthread_mutex_unlock( &xSingleThreadMutex );
@@ -578,14 +575,13 @@ void prvResumeSignalHandler(int sig)
 
 void prvResumeThread( pthread_t xThreadId )
 {
-BaseType_t xResult;
 	if ( 0 == pthread_mutex_lock( &xSuspendResumeThreadMutex ) )
 	{
 		if ( pthread_self() != xThreadId )
 		{
-			xResult = pthread_kill( xThreadId, SIG_RESUME );
+			( void ) pthread_kill( xThreadId, SIG_RESUME );
 		}
-		xResult = pthread_mutex_unlock( &xSuspendResumeThreadMutex );
+		( void ) pthread_mutex_unlock( &xSuspendResumeThreadMutex );
 	}
 }
 /*-----------------------------------------------------------*/

@@ -73,8 +73,13 @@ extern "C" {
 #define portDOUBLE		double
 #define portLONG		int
 #define portSHORT		short
-#define portSTACK_TYPE  unsigned long
-#define portBASE_TYPE   long
+#define portSTACK_TYPE	ptrdiff_t
+
+#define portPOINTER_SIZE_TYPE ptrdiff_t
+
+typedef portSTACK_TYPE StackType_t;
+typedef long BaseType_t;
+typedef unsigned long UBaseType_t;
 
 #if( configUSE_16_BIT_TICKS == 1 )
 	typedef unsigned portSHORT TickType_t;
@@ -82,6 +87,10 @@ extern "C" {
 #else
 	typedef unsigned portLONG TickType_t;
 	#define portMAX_DELAY ( TickType_t ) 0xffffffff
+
+	/* 32/64-bit tick type on a 32/64-bit architecture, so reads of the tick
+	count do not need to be guarded with a critical section. */
+	#define portTICK_TYPE_IS_ATOMIC 1
 #endif
 /*-----------------------------------------------------------*/
 
@@ -89,8 +98,13 @@ extern "C" {
 #define portSTACK_GROWTH				( -1 )
 #define portTICK_RATE_MS				( ( TickType_t ) 1000 / configTICK_RATE_HZ )
 #define portTICK_RATE_MICROSECONDS		( ( TickType_t ) 1000000 / configTICK_RATE_HZ )
-#define portBYTE_ALIGNMENT				4
 #define portREMOVE_STATIC_QUALIFIER
+
+#if defined( __LP64__ )
+	#define portBYTE_ALIGNMENT		8
+#else
+	#define portBYTE_ALIGNMENT		4
+#endif
 /*-----------------------------------------------------------*/
 
 
@@ -110,8 +124,8 @@ extern void vPortEnableInterrupts( void );
 #define portSET_INTERRUPT_MASK()	( vPortDisableInterrupts() )
 #define portCLEAR_INTERRUPT_MASK()	( vPortEnableInterrupts() )
 
-extern portBASE_TYPE xPortSetInterruptMask( void );
-extern void vPortClearInterruptMask( portBASE_TYPE xMask );
+extern BaseType_t xPortSetInterruptMask( void );
+extern void vPortClearInterruptMask( BaseType_t xMask );
 
 #define portSET_INTERRUPT_MASK_FROM_ISR()		xPortSetInterruptMask()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortClearInterruptMask(x)
@@ -165,4 +179,3 @@ extern unsigned long ulPortGetTimerValue( void );
 #endif
 
 #endif /* PORTMACRO_H */
-

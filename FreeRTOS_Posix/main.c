@@ -185,7 +185,6 @@ int main( void )
 {
 TaskHandle_t hUDPTask, hMQTask, hSerialTask;
 QueueHandle_t xUDPReceiveQueue = NULL, xIPCQueue = NULL, xSerialRxQueue = NULL;
-int iSocketReceive = 0;
 struct sockaddr_in xReceiveAddress;
 
 	/* Initialise hardware and utilities. */
@@ -199,7 +198,7 @@ struct sockaddr_in xReceiveAddress;
 
 	/* Set-up the Receive Queue and open the socket ready to receive. */
 	xUDPReceiveQueue = xQueueCreate( 2, sizeof ( xUDPPacket ) );
-	iSocketReceive = iSocketOpenUDP( vUDPReceiveAndDeliverCallback, xUDPReceiveQueue, &xReceiveAddress );
+	( void ) iSocketOpenUDP( vUDPReceiveAndDeliverCallback, xUDPReceiveQueue, &xReceiveAddress );
 
 	/* Remember to open a whole in your Firewall to be able to receive!!! */
 
@@ -315,11 +314,11 @@ QueueHandle_t xUDPReceiveQueue = (QueueHandle_t)pvParameters;
 				/* Timeout. Send the data. */
 				if ( iSendTaskList )
 				{
-					vTaskList( xPacket.ucPacket );
+					vTaskList( ( char * ) xPacket.ucPacket );
 				}
 				else
 				{
-					vTaskGetRunTimeStats( xPacket.ucPacket );
+					vTaskGetRunTimeStats( ( char * ) xPacket.ucPacket );
 				}
 				iSendTaskList = !iSendTaskList;
 
