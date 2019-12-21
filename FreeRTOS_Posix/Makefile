@@ -26,7 +26,9 @@ all:
 	$(MAKE) build
 
 # read dependency files if they exist
-include $(wildcard $(DEPS))
+ifeq (,$(filter distclean, $(MAKECMDGOALS)))
+  include $(wildcard $(DEPS))
+endif
 
 depend: $(DEPS)
 
