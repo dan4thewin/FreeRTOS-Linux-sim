@@ -66,7 +66,7 @@ FILE *pf;
 }
 /*-----------------------------------------------------------*/
 
-void vWriteBufferToDisk( const char * const pcBuffer, unsigned long ulBufferLength )
+void vWriteBufferToDisk( const char * const pcBuffer, uint32_t ulBufferLength )
 {
 const portCHAR * const pcFileName = "trace.bin";
 FILE *pf;

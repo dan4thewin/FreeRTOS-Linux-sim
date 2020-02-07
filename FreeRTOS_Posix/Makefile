@@ -1,8 +1,8 @@
 OUTDIR := build
-SRCDIRS := AsyncIO Common_Demo/Full Common_Demo/Minimal FileIO ParTest portable/GCC/Posix FreeRTOS_Kernel
+SRCDIRS := AsyncIO Common_Demo/Full Common_Demo/Minimal FileIO ParTest portable/GCC/Posix FreeRTOS-Kernel
 INCDIRS := . $(wildcard */include) portable/GCC/Posix
 EXE := $(OUTDIR)/runsim
-SRCS := main.c $(wildcard $(SRCDIRS:%=%/*.c)) FreeRTOS_Kernel/portable/MemMang/heap_3.c
+SRCS := main.c $(wildcard $(SRCDIRS:%=%/*.c)) FreeRTOS-Kernel/portable/MemMang/heap_3.c
 
 CC := gcc
 LDFLAGS := -pthread -lrt
