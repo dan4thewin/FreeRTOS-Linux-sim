@@ -1,56 +1,29 @@
 /*
-    FreeRTOS V6.0.4 - Copyright (C) 2010 Real Time Engineers Ltd.
-
-    ***************************************************************************
-    *                                                                         *
-    * If you are:                                                             *
-    *                                                                         *
-    *    + New to FreeRTOS,                                                   *
-    *    + Wanting to learn FreeRTOS or multitasking in general quickly       *
-    *    + Looking for basic training,                                        *
-    *    + Wanting to improve your FreeRTOS skills and productivity           *
-    *                                                                         *
-    * then take a look at the FreeRTOS eBook                                  *
-    *                                                                         *
-    *        "Using the FreeRTOS Real Time Kernel - a Practical Guide"        *
-    *                  http://www.FreeRTOS.org/Documentation                  *
-    *                                                                         *
-    * A pdf reference manual is also available.  Both are usually delivered   *
-    * to your inbox within 20 minutes to two hours when purchased between 8am *
-    * and 8pm GMT (although please allow up to 24 hours in case of            *
-    * exceptional circumstances).  Thank you for your support!                *
-    *                                                                         *
-    ***************************************************************************
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation AND MODIFIED BY the FreeRTOS exception.
-    ***NOTE*** The exception to the GPL is included to allow you to distribute
-    a combined work that includes FreeRTOS without being obliged to provide the
-    source code for proprietary components outside of the FreeRTOS kernel.
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-    more details. You should have received a copy of the GNU General Public
-    License and the FreeRTOS license exception along with FreeRTOS; if not it
-    can be viewed here: http://www.freertos.org/a00114.html and also obtained
-    by writing to Richard Barry, contact details for whom are available on the
-    FreeRTOS WEB site.
-
-    1 tab == 4 spaces!
-
-    http://www.FreeRTOS.org - Documentation, latest information, license and
-    contact details.
-
-    http://www.SafeRTOS.com - A version that is certified for use in safety
-    critical systems.
-
-    http://www.OpenRTOS.com - Commercial support, development, porting,
-    licensing and training services.
-*/
-
+ * FreeRTOS Kernel V10.2.1
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /*
  * Tests the behaviour when data is peeked from a queue when there are
@@ -98,7 +71,7 @@ static volatile BaseType_t xErrorDetected = pdFALSE;
 
 /* Counter that is incremented on each cycle of a test.  This is used to
 detect a stalled task - a test that is no longer running. */
-static volatile unsigned portLONG ulLoopCounter = 0;
+static volatile uint32_t ulLoopCounter = 0;
 
 /* Handles to the test tasks. */
 TaskHandle_t xMediumPriorityTask, xHighPriorityTask, xHighestPriorityTask;
@@ -109,36 +82,39 @@ void vStartQueuePeekTasks( void )
 QueueHandle_t xQueue;
 
 	/* Create the queue that we are going to use for the test/demo. */
-	xQueue = xQueueCreate( qpeekQUEUE_LENGTH, sizeof( unsigned portLONG ) );
+	xQueue = xQueueCreate( qpeekQUEUE_LENGTH, sizeof( uint32_t ) );
 
-	/* vQueueAddToRegistry() adds the queue to the queue registry, if one is
-	in use.  The queue registry is provided as a means for kernel aware
-	debuggers to locate queues and has no purpose if a kernel aware debugger
-	is not being used.  The call to vQueueAddToRegistry() will be removed
-	by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is
-	defined to be less than 1. */
-	vQueueAddToRegistry( xQueue, "QPeek_Test_Queue" );
+	if( xQueue != NULL )
+	{
+		/* vQueueAddToRegistry() adds the queue to the queue registry, if one is
+		in use.  The queue registry is provided as a means for kernel aware
+		debuggers to locate queues and has no purpose if a kernel aware debugger
+		is not being used.  The call to vQueueAddToRegistry() will be removed
+		by the pre-processor if configQUEUE_REGISTRY_SIZE is not defined or is
+		defined to be less than 1. */
+		vQueueAddToRegistry( xQueue, "QPeek_Test_Queue" );
 
-	/* Create the demo tasks and pass it the queue just created.  We are
-	passing the queue handle by value so it does not matter that it is declared
-	on the stack here. */
-	xTaskCreate( prvLowPriorityPeekTask, "PeekL", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekLOW_PRIORITY, NULL );
-	xTaskCreate( prvMediumPriorityPeekTask, "PeekM", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekMEDIUM_PRIORITY, &xMediumPriorityTask );
-	xTaskCreate( prvHighPriorityPeekTask, "PeekH1", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekHIGH_PRIORITY, &xHighPriorityTask );
-	xTaskCreate( prvHighestPriorityPeekTask, "PeekH2", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekHIGHEST_PRIORITY, &xHighestPriorityTask );
+		/* Create the demo tasks and pass it the queue just created.  We are
+		passing the queue handle by value so it does not matter that it is declared
+		on the stack here. */
+		xTaskCreate( prvLowPriorityPeekTask, "PeekL", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekLOW_PRIORITY, NULL );
+		xTaskCreate( prvMediumPriorityPeekTask, "PeekM", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekMEDIUM_PRIORITY, &xMediumPriorityTask );
+		xTaskCreate( prvHighPriorityPeekTask, "PeekH1", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekHIGH_PRIORITY, &xHighPriorityTask );
+		xTaskCreate( prvHighestPriorityPeekTask, "PeekH2", configMINIMAL_STACK_SIZE, ( void * ) xQueue, qpeekHIGHEST_PRIORITY, &xHighestPriorityTask );
+	}
 }
 /*-----------------------------------------------------------*/
 
 static void prvHighestPriorityPeekTask( void *pvParameters )
 {
 QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
-unsigned portLONG ulValue;
+uint32_t ulValue;
 
 	#ifdef USE_STDIO
 	{
-		void vPrintDisplayMessage( const portCHAR * const * ppcMessageToSend );
+		void vPrintDisplayMessage( const char * const * ppcMessageToSend );
 
-		const portCHAR * const pcTaskStartMsg = "Queue peek test started.\r\n";
+		const char * const pcTaskStartMsg = "Queue peek test started.\r\n";
 
 		/* Queue a message for printing to say the task has started. */
 		vPrintDisplayMessage( &pcTaskStartMsg );
@@ -241,7 +217,7 @@ unsigned portLONG ulValue;
 static void prvHighPriorityPeekTask( void *pvParameters )
 {
 QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
-unsigned portLONG ulValue;
+uint32_t ulValue;
 
 	for( ;; )
 	{
@@ -296,7 +272,7 @@ unsigned portLONG ulValue;
 static void prvMediumPriorityPeekTask( void *pvParameters )
 {
 QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
-unsigned portLONG ulValue;
+uint32_t ulValue;
 
 	for( ;; )
 	{
@@ -337,7 +313,7 @@ unsigned portLONG ulValue;
 static void prvLowPriorityPeekTask( void *pvParameters )
 {
 QueueHandle_t xQueue = ( QueueHandle_t ) pvParameters;
-unsigned portLONG ulValue;
+uint32_t ulValue;
 
 	for( ;; )
 	{
@@ -350,6 +326,10 @@ unsigned portLONG ulValue;
 			had a problem writing to the queue. */
 			xErrorDetected = pdTRUE;
 		}
+
+		#if configUSE_PREEMPTION == 0
+			taskYIELD();
+		#endif
 
 		/* By the time we get here the data should have been removed from
 		the queue. */
@@ -367,6 +347,10 @@ unsigned portLONG ulValue;
 			had a problem writing to the queue. */
 			xErrorDetected = pdTRUE;
 		}
+
+		#if configUSE_PREEMPTION == 0
+			taskYIELD();
+		#endif
 
 		/* All the other tasks should now have successfully peeked the data.
 		The data is still in the queue so we should be able to receive it. */
@@ -395,6 +379,10 @@ unsigned portLONG ulValue;
 		vTaskResume( xHighPriorityTask );
 		vTaskResume( xHighestPriorityTask );
 
+		#if( configUSE_PREEMPTION == 0 )
+			taskYIELD();
+		#endif
+
 		ulValue = 0xaabbaabb;
 		if( xQueueSendToFront( xQueue, &ulValue, qpeekNO_BLOCK ) != pdPASS )
 		{
@@ -402,6 +390,10 @@ unsigned portLONG ulValue;
 			had a problem writing to the queue. */
 			xErrorDetected = pdTRUE;
 		}
+
+		#if configUSE_PREEMPTION == 0
+			taskYIELD();
+		#endif
 
 		/* This time we should find that the queue is empty.  The high priority
 		task actually removed the data rather than just peeking it. */
@@ -427,7 +419,7 @@ unsigned portLONG ulValue;
 /* This is called to check that all the created tasks are still running. */
 BaseType_t xAreQueuePeekTasksStillRunning( void )
 {
-static unsigned portLONG ulLastLoopCounter = 0;
+static uint32_t ulLastLoopCounter = 0;
 
 	/* If the demo task is still running then we expect the loopcounter to
 	have incremented since this function was last called. */
@@ -441,6 +433,6 @@ static unsigned portLONG ulLastLoopCounter = 0;
 	/* Errors detected in the task itself will have latched xErrorDetected
 	to true. */
 
-	return !xErrorDetected;
+	return ( BaseType_t ) !xErrorDetected;
 }
 
